@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 // export const getBookMetadataLink = (bookId: string): string =>
 //     `https://www.gutenberg.org/ebooks/${bookId}`;
-export const getBookMetadataLink = (bookId: string): string[] => {
+export const getBookMetadataLinks = (bookId: string): string[] => {
     const bookIdNumber = parseInt(bookId, 10);
     if (isNaN(bookIdNumber)) {
     }
@@ -34,4 +34,7 @@ export const getBookMetadataLink = (bookId: string): string[] => {
         `https://www.mirrorservice.org/sites/ftp.ibiblio.org/pub/docs/books/gutenberg/${urlPostFix}.txt`,
         `https://www.mirrorservice.org/sites/ftp.ibiblio.org/pub/docs/books/gutenberg/${urlPostFix}-0.txt`,
     ];
+};
+export const getGutendexLink = (bookId: string): string => {
+    return `https://gutendex.com/books/${bookId}`;
 };
