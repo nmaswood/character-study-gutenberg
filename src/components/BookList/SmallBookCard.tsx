@@ -11,9 +11,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useCallback } from "react";
+import { Book as BookIcon } from "lucide-react";
 
-export default function SmallBookItem({
+export default function SmallBookCard({
     book,
     onDelete,
     openBook,
@@ -22,19 +22,23 @@ export default function SmallBookItem({
     onDelete: (bookId: string) => void;
     openBook: (bookId: string) => void;
 }) {
-    useCallback(() => book.authors.map((auth) => auth.name).join(", "), [book]);
-
-    console.log(book);
     return (
-        <Card className="w-[350px] mx-5">
+        <Card className="w-[300px] h-[400px] mx-5 flex-col items-end">
             <CardHeader>
                 <CardTitle> {book.title}</CardTitle>
-                <CardDescription>
-                    by {book.authors.map((auth) => auth.name).join(", ")}
-                </CardDescription>
+                <CardDescription>by {book.authors}</CardDescription>
             </CardHeader>
-            <CardContent></CardContent>
-            <CardFooter className="flex justify-between">
+            <CardContent>
+                {book.subjects
+                    .join(" ")
+                    .split("--")
+                    .map((text, i) => <div key={i}>{text}</div>)
+                    .slice(
+                        0,
+                        Math.min(5, book.subjects.join(" ").split("--").length)
+                    )}
+            </CardContent>
+            <CardFooter className="flex justify-between items-end">
                 <Button
                     variant="outline"
                     onClick={(e) => {
@@ -42,7 +46,7 @@ export default function SmallBookItem({
                         openBook(book.id);
                     }}
                 >
-                    Fetch Contents
+                    Open Book <BookIcon />
                 </Button>
                 <Button
                     variant="destructive"

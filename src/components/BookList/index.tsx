@@ -2,29 +2,19 @@
 
 import { useBookStore } from "@/stores/useBookStore";
 import BookDialog from "./BookDialog";
-import SmallBookItem from "./SmallBookItem";
+import SmallBookCard from "./SmallBookCard";
 import { useBookUIStore } from "@/stores/useBookUIStore";
-import useFetchBookInput from "@/app/hooks/useFetchBookInput";
+import useFetchBook from "@/app/hooks/useFetchBook";
 
 export default function BookList() {
-    const { localBooks, removeBook, getBook } = useBookStore();
-    const { setOpenedBook } = useBookUIStore();
-    const { fetchBookContent } = useFetchBookInput();
+    const { localBooks, removeBook } = useBookStore();
+    const { openBook } = useFetchBook();
 
-    const openBook = async (bookId: string) => {
-        const book = getBook(bookId);
-
-        if (book) {
-            const loadedBook = await fetchBookContent(bookId);
-
-            console.log({ loadedBook });
-            if (loadedBook) setOpenedBook(loadedBook);
-        }
-    };
+    console.log({ localBooks });
     return (
         <div className="flex flex-row ">
             {localBooks.map((book, i) => (
-                <SmallBookItem
+                <SmallBookCard
                     key={i}
                     book={book}
                     onDelete={(bookId: string) => {

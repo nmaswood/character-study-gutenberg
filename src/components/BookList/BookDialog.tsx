@@ -45,24 +45,17 @@ export default function BookDialog() {
             <DialogContent className="sm:max-w-1/2 min-h-1/2 lg:max-w-screen-lg overflow-y-scroll max-h-screen">
                 <DialogHeader>
                     <DialogTitle>{openedBook?.title}</DialogTitle>
-                    <DialogHeader>
-                        by{" "}
-                        {openedBook?.authors
-                            .map((auth) => auth.name)
-                            .join(", ")}
-                    </DialogHeader>
+                    <DialogHeader>by {openedBook?.authors}</DialogHeader>
                     <DialogDescription>
                         {" "}
                         {/* Move descriptive text here if needed */}
                         {/* Additional content like the book's metadata or summary */}
                     </DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="max-h-[400px] rounded-md border p-4">
+                <ScrollArea className="max-h-[400px] rounded-md border p-4 whitespace-pre-wrap">
                     {" "}
                     {/* Move ScrollArea outside DialogDescription */}
-                    {openedBook &&
-                        openedBook?.bookContent &&
-                        openedBook.bookContent}
+                    {openedBook?.bookContent}
                 </ScrollArea>
                 <div className="grid gap-4 py-4"></div>
                 <DialogFooter>

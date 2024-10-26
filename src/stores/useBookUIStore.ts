@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { Book, LoadedBook } from "./useBookStore";
+import { LoadedBook } from "./useBookStore";
 
 type BookUIState = {
-    openedBook: Book | LoadedBook | null;
+    openedBook: LoadedBook | null;
 };
 
 type BookUIAction = {
