@@ -7,29 +7,17 @@ export function cn(...inputs: ClassValue[]) {
 
 // export const getBookMetadataLink = (bookId: string): string =>
 //     `https://www.gutenberg.org/ebooks/${bookId}`;
-
 export const getBookMirrorDownloadLinks = (bookId: string): string[] => {
     const bookIdNumber = parseInt(bookId, 10);
-    if (isNaN(bookIdNumber)) {
-    }
-    let num = bookIdNumber;
-    let urlPostFix = "";
-    while (num > 0) {
-        const lastNum = num % 10;
-        num = (num - lastNum) / 10;
-        console.log({ lastNum, num, bookIdNumber });
 
-        urlPostFix += lastNum;
-    }
-
-    urlPostFix =
-        Array.from(urlPostFix.slice(1, urlPostFix.length)).reverse().join("/") +
+    // turns 1787 -> 1/7/8/1787/1787
+    // this is how the mirror structures files
+    const urlPostFix =
+        Array.from(bookId.slice(0, bookId.length - 1)).join("/") +
         "/" +
         bookIdNumber +
         "/" +
         bookIdNumber;
-
-    console.log(urlPostFix);
 
     return [
         `https://www.mirrorservice.org/sites/ftp.ibiblio.org/pub/docs/books/gutenberg/${urlPostFix}.txt`,
@@ -49,4 +37,14 @@ const userAgents = [
 
 export const getRandomUserAgent = () => {
     return userAgents[Math.floor(Math.random() * userAgents.length)];
+};
+
+export const formatNumber = (num: number): string => {
+    if (num >= 1_000_000) {
+        return `${(num / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
+    }
+    if (num >= 1_000) {
+        return `${(num / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
+    }
+    return num.toString();
 };

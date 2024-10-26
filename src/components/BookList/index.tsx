@@ -3,14 +3,12 @@
 import { useBookStore } from "@/stores/useBookStore";
 import BookDialog from "./BookDialog";
 import SmallBookCard from "./SmallBookCard";
-import { useBookUIStore } from "@/stores/useBookUIStore";
 import useFetchBook from "@/app/hooks/useFetchBook";
 
 export default function BookList() {
     const { localBooks, removeBook } = useBookStore();
-    const { openBook } = useFetchBook();
+    const { openBook, loadingBookContent } = useFetchBook();
 
-    console.log({ localBooks });
     return (
         <div className="flex flex-row ">
             {localBooks.map((book, i) => (
@@ -21,6 +19,7 @@ export default function BookList() {
                         removeBook(bookId);
                     }}
                     openBook={openBook}
+                    loadingBookContent={loadingBookContent}
                 />
             ))}
             <BookDialog />

@@ -12,15 +12,18 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Book as BookIcon } from "lucide-react";
+import { LoadingSpinner } from "../ui/loading-spinner";
 
 export default function SmallBookCard({
     book,
     onDelete,
     openBook,
+    loadingBookContent,
 }: {
     book: Book;
     onDelete: (bookId: string) => void;
     openBook: (bookId: string) => void;
+    loadingBookContent: boolean;
 }) {
     return (
         <Card className="w-[300px] h-[400px] mx-5 flex-col items-end">
@@ -29,16 +32,6 @@ export default function SmallBookCard({
                 <CardDescription>by {book.authors}</CardDescription>
             </CardHeader>
             <CardContent>
-                {book.subjects
-                    .join(" ")
-                    .split("--")
-                    .map((text, i) => <div key={i}>{text}</div>)
-                    .slice(
-                        0,
-                        Math.min(5, book.subjects.join(" ").split("--").length)
-                    )}
-            </CardContent>
-            <CardFooter className="flex justify-between items-end">
                 <Button
                     variant="outline"
                     onClick={(e) => {
@@ -46,7 +39,8 @@ export default function SmallBookCard({
                         openBook(book.id);
                     }}
                 >
-                    Open Book <BookIcon />
+                    Open Book {loadingBookContent && <LoadingSpinner />}{" "}
+                    <BookIcon />
                 </Button>
                 <Button
                     variant="destructive"
@@ -57,6 +51,23 @@ export default function SmallBookCard({
                 >
                     Remove
                 </Button>
+            </CardContent>
+            <CardFooter className="flex justify-between items-end">
+                <div className="bold">
+                    Topics:
+                    {book.subjects
+                        .join(" ")
+                        .split("--")
+                        .map((text, i) => <div key={i}>{text}</div>)
+                        .slice(
+                            0,
+                            // the metadata uses -- to split
+                            Math.min(
+                                5,
+                                book.subjects.join(" ").split("--").length
+                            )
+                        )}
+                </div>
             </CardFooter>
         </Card>
     );

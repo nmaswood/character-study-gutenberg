@@ -7,11 +7,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { FetchedBook } from "../../stores/useBookStore";
 
-// https://www.gutenberg.org/ebooks/1533.txt.utf-8
-
 export default function useFetchBook() {
     const [bookId, setBookId] = useState("");
     const [loading, setLoading] = useState(false);
+    const [loadingBookContent, setLoadingBookContent] = useState(false);
 
     const { setOpenedBook } = useBookUIStore();
 
@@ -19,15 +18,17 @@ export default function useFetchBook() {
         useBookStore();
 
     const openBook = async (bookId: string) => {
+        setLoadingBookContent(true);
         const book = getBook(bookId);
 
         if (isLoadedBook(book)) {
             setOpenedBook(book);
         } else {
             const bookContent = await fetchBookContent(bookId);
-
-            loadBookContent(bookId, bookContent);
+            const loadedBook = loadBookContent(bookId, bookContent);
+            setOpenedBook(loadedBook);
         }
+        setLoadingBookContent(false);
     };
 
     const fetchBookMetadata = async () => {
@@ -58,7 +59,6 @@ export default function useFetchBook() {
                 toast.success("Book successfully fetched");
 
                 addBook(book);
-                await openBook(bookId);
             }
         } finally {
             setLoading(false);
@@ -67,11 +67,9 @@ export default function useFetchBook() {
 
     const fetchBookContent = async (bookId: string): Promise<string> => {
         try {
-            // Add case for not finding .txt url
             const bookContent = await axiosClient
                 .get("/api/book/" + bookId)
                 .then((response) => response.data);
-            console.log({ bookContent });
             return bookContent;
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -94,6 +92,7 @@ export default function useFetchBook() {
     return {
         bookId,
         loading,
+        loadingBookContent,
         openBook,
         onBookIdChange,
         fetchBookMetadata,
