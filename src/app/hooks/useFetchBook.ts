@@ -6,6 +6,7 @@ import axios from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
 import { FetchedBook } from "../../stores/useBookStore";
+import { AnalyzeBookResponse } from "../api/model/book/analyze/route";
 
 export default function useFetchBook() {
     const [bookId, setBookId] = useState("");
@@ -16,20 +17,6 @@ export default function useFetchBook() {
 
     const { localBooks, addBook, getBook, isLoadedBook, loadBookContent } =
         useBookStore();
-
-    const openBook = async (bookId: string) => {
-        setLoadingBookContent(true);
-        const book = getBook(bookId);
-
-        if (isLoadedBook(book)) {
-            setOpenedBook(book);
-        } else {
-            const bookContent = await fetchBookContent(bookId);
-            const loadedBook = loadBookContent(bookId, bookContent);
-            setOpenedBook(loadedBook);
-        }
-        setLoadingBookContent(false);
-    };
 
     const fetchBookMetadata = async () => {
         setLoading(true);
@@ -83,6 +70,76 @@ export default function useFetchBook() {
 
             throw new Error("Error: could not load book");
         }
+    };
+
+    const openBook = async (bookId: string) => {
+        setLoadingBookContent(true);
+
+        const book = getBook(bookId);
+
+        if (isLoadedBook(book)) {
+            try {
+                const analyzedBook: AnalyzeBookResponse = (
+                    await axios.get("/api/model/book/" + bookId)
+                ).data;
+                setOpenedBook({
+                    ...book,
+                    isAnalyzed: true,
+                    characters: analyzedBook.characters,
+                    shortSummary: analyzedBook.shortSummary,
+                });
+
+                console.log(analyzedBook);
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.log({
+                        error: {
+                            cause: error.cause,
+                            code: error.code,
+                        },
+                    });
+
+                    if (error.response?.status === 404) {
+                        console.log("Book not analyzed");
+                    }
+                }
+
+                setOpenedBook(book);
+            }
+        } else {
+            const bookContent = await fetchBookContent(bookId);
+            const loadedBook = loadBookContent(bookId, bookContent);
+
+            try {
+                const analyzedBook: AnalyzeBookResponse = (
+                    await axios.get("/api/model/book/" + bookId)
+                ).data;
+
+                setOpenedBook({
+                    ...loadedBook,
+                    isAnalyzed: true,
+                    characters: analyzedBook.characters,
+                    shortSummary: analyzedBook.shortSummary,
+                });
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.log({
+                        error: {
+                            cause: error.cause,
+                            code: error.code,
+                        },
+                    });
+
+                    if (error.response?.status === 404) {
+                        console.log("Book not analyzed");
+                    }
+                }
+
+                setOpenedBook(loadedBook);
+            }
+        }
+
+        setLoadingBookContent(false);
     };
 
     const onBookIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
