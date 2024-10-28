@@ -13,18 +13,17 @@ import {
 } from "@/components/ui/card";
 import { Book as BookIcon } from "lucide-react";
 import { LoadingSpinner } from "../ui/loading-spinner";
+import useFetchBook from "@/app/hooks/useFetchBook";
 
 export default function SmallBookCard({
     book,
     onDelete,
-    openBook,
-    loadingBookContent,
 }: {
     book: Book;
     onDelete: (bookId: string) => void;
-    openBook: (bookId: string) => void;
-    loadingBookContent: boolean;
 }) {
+    const { openBook, loadingBookContent } = useFetchBook();
+
     return (
         <Card className="w-[300px] h-[400px] mx-5 flex-col items-end">
             <CardHeader>
