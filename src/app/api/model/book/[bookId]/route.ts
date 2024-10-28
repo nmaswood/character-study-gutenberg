@@ -22,5 +22,6 @@ export async function GET(request: Request) {
     return NextResponse.json({
         bookId: book.id,
         characters: book.characters.map((character) => character.characterName),
+        shortSummary: book.shortSummary,
     });
 }
