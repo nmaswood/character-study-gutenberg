@@ -8,59 +8,21 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { useBookUIStore } from "@/stores/useBookUIStore";
-import { ScrollArea } from "../ui/scroll-area";
-import { useMemo } from "react";
-import { encode } from "gpt-tokenizer";
 import { formatNumber } from "../../lib/utils";
 import useBookDialog from "@/app/hooks/useBookDialog";
+import BookReader from "./BookReader";
+import { LoadingSpinner } from "../ui/loading-spinner";
 
 export default function BookDialog() {
-    const { openedBook, closeBook } = useBookUIStore();
-    const { sendBook } = useBookDialog();
-
-    console.log({ openedBook, open: openedBook !== null });
-
-    const onOpenChange = (open: boolean) => {
-        if (!open) {
-            closeBook();
-        }
-    };
-
-    const wordCountTokenArr = useMemo(() => {
-        if (!openedBook) return [0, 0];
-        const bookContent = openedBook.bookContent;
-        const tokenCount = encode(bookContent).length;
-        const wordCount = bookContent.split(" ").length;
-
-        return [wordCount, tokenCount];
-    }, [openedBook]);
-
-    // TODO Add page logic
-    // const getBookTitle = () => {};
-    // const getPage = (page: number = 1) => {
-    //     if (openedBook) {
-    //         const textArr = openedBook.bookContent.split(" ");
-    //         const pageCount = 50;
-    //         const wordCountByPage = textArr.length / pageCount;
-
-    //         const wordsOnPage = textArr.slice(
-    //             Math.min(
-    //                 wordCountByPage * (pageCount - 1),
-    //                 page * wordCountByPage
-    //             ),
-    //             Math.min(textArr.length - 1, (page + 1) * wordCountByPage)
-    //         );
-
-    //         return wordsOnPage.join(" ");
-    //     }
-    // };
+    const { openedBook, onOpenChange, analyzeBook, isAnalyzing, totalCount } =
+        useBookDialog();
 
     if (!openedBook) return <></>;
 
+    console.log(openedBook);
     return (
         <Dialog open={openedBook !== null} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-1/2 min-h-1/2 lg:max-w-screen-sm overflow-y-scroll max-h-screen">
+            <DialogContent className="sm:max-w-1/2 min-h-1/2 lg:max-w-screen-sm max-h-[600px] overflow-auto">
                 <DialogHeader>
                     <DialogTitle>{openedBook?.title}</DialogTitle>
                     <DialogHeader>by {openedBook?.authors}</DialogHeader>
@@ -75,23 +37,43 @@ export default function BookDialog() {
                                         {key}
                                     </span>
                                     <span className="text-lg font-bold leading-none sm:text-3xl">
-                                        {formatNumber(wordCountTokenArr[i])}
+                                        {formatNumber(totalCount[i])}
                                     </span>
                                 </div>
                             );
                         })}
                     </div>
-                    <div className="flex flex-row items-start">
-                        <Button
-                            type="button"
-                            onClick={async (e) => {
-                                e.preventDefault();
-                                await sendBook(openedBook);
-                            }}
-                        >
-                            Get Characters
-                        </Button>
-                    </div>
+                    {openedBook.isAnalyzed ? (
+                        <>
+                            {openedBook.shortSummary && (
+                                <div className="font-normal italic">
+                                    {openedBook.shortSummary}
+                                </div>
+                            )}
+                            <div className="flex flex-col gap-2 pt-4">
+                                {openedBook.characters?.map((character, i) => (
+                                    <div key={i} className="text-blue-950">
+                                        <Button type="button">
+                                            Chat with {character}{" "}
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="flex flex-row items-start">
+                            <Button
+                                type="button"
+                                disabled={isAnalyzing}
+                                onClick={async (e) => {
+                                    e.preventDefault();
+                                    await analyzeBook(openedBook);
+                                }}
+                            >
+                                Analyze {isAnalyzing && <LoadingSpinner />}
+                            </Button>
+                        </div>
+                    )}
 
                     <DialogDescription>
                         {" "}
@@ -99,12 +81,11 @@ export default function BookDialog() {
                         {/* Additional content like the book's metadata or summary */}
                     </DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="max-h-[400px] rounded-md border p-4 whitespace-pre-wrap">
-                    {" "}
-                    {/* Move ScrollArea outside DialogDescription */}
-                    {openedBook?.bookContent}
-                </ScrollArea>
+
+                <BookReader bookContent={openedBook.bookContent} />
+
                 <div className="grid gap-4 py-4"></div>
+
                 <DialogFooter></DialogFooter>
             </DialogContent>
         </Dialog>
