@@ -19,7 +19,6 @@ export default function BookDialog() {
 
     if (!openedBook) return <></>;
 
-    console.log(openedBook);
     return (
         <Dialog open={openedBook !== null} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-1/2 min-h-1/2 lg:max-w-screen-sm max-h-[600px] overflow-auto">

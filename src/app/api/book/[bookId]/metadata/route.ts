@@ -50,7 +50,7 @@ export async function GET(request: Request) {
         return NextResponse.json(bookMetaData);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            console.log({
+            console.error({
                 error: {
                     cause: error.cause,
                     code: error.code,

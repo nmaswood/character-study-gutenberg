@@ -60,7 +60,7 @@ export default function useFetchBook() {
             return bookContent;
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.log({
+                console.error({
                     error: {
                         cause: error.cause,
                         code: error.code,
@@ -88,11 +88,9 @@ export default function useFetchBook() {
                     characters: analyzedBook.characters,
                     shortSummary: analyzedBook.shortSummary,
                 });
-
-                console.log(analyzedBook);
             } catch (error) {
                 if (axios.isAxiosError(error)) {
-                    console.log({
+                    console.error({
                         error: {
                             cause: error.cause,
                             code: error.code,
@@ -100,7 +98,7 @@ export default function useFetchBook() {
                     });
 
                     if (error.response?.status === 404) {
-                        console.log("Book not analyzed");
+                        console.error("Book not analyzed");
                     }
                 }
 
@@ -123,7 +121,7 @@ export default function useFetchBook() {
                 });
             } catch (error) {
                 if (axios.isAxiosError(error)) {
-                    console.log({
+                    console.error({
                         error: {
                             cause: error.cause,
                             code: error.code,
@@ -131,7 +129,7 @@ export default function useFetchBook() {
                     });
 
                     if (error.response?.status === 404) {
-                        console.log("Book not analyzed");
+                        console.error("Book not analyzed");
                     }
                 }
 

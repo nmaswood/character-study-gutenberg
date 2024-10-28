@@ -28,7 +28,7 @@ export default function useBookDialog() {
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.log({
+                console.error({
                     error: {
                         cause: error.cause,
                         code: error.code,

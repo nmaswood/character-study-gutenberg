@@ -28,7 +28,7 @@ export async function GET(request: Request) {
             return new NextResponse(response.data);
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.log({
+                console.error({
                     error: {
                         cause: error.cause,
                         code: error.code,
@@ -64,7 +64,7 @@ export async function GET_o(request: Request) {
         return NextResponse.json(response.data);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            console.log({
+            console.error({
                 error: {
                     cause: error.cause,
                     code: error.code,

@@ -42,7 +42,6 @@ export default function BookReader({ bookContent }: { bookContent: string }) {
             .slice(currentPageStart, currentPageEnd)
             .join(" ");
 
-        console.log({ currentPage });
         setCurrentPage(newCurrentPage);
     }, [bookContent, currentPage, currentPageNumber]);
 
