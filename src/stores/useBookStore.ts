@@ -27,6 +27,7 @@ export type Book = {
 
 export type LoadedBook = Book & {
     bookContent: string;
+    isAnalyzed: boolean;
 };
 
 type BookState = {
@@ -74,7 +75,11 @@ export const useBookStore = create<BookState & BookAction>()(
                         (book) => book.id !== bookId
                     ),
                 })),
-            loadBookContent: (bookId: string, bookContent: string) => {
+            loadBookContent: (
+                bookId: string,
+                bookContent: string,
+                isAnalyzed = false
+            ) => {
                 let newBookIndx = null;
 
                 const newBooks = get().localBooks.map((book, i) => {
@@ -82,7 +87,7 @@ export const useBookStore = create<BookState & BookAction>()(
 
                     newBookIndx = i;
 
-                    return { ...book, bookContent } as LoadedBook;
+                    return { ...book, bookContent, isAnalyzed } as LoadedBook;
                 });
 
                 if (newBookIndx === null) {
