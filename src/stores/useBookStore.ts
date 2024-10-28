@@ -28,6 +28,8 @@ export type Book = {
 export type LoadedBook = Book & {
     bookContent: string;
     isAnalyzed: boolean;
+    characters?: string[];
+    shortSummary?: string;
 };
 
 type BookState = {
