@@ -25,33 +25,16 @@ export default function SmallBookCard({
     const { openBook, loadingBookContent } = useFetchBook();
 
     return (
-        <Card className="w-[300px] h-[400px] mx-5 flex-col items-end">
+        <Card className="lg:w-[300px] lg:max-h-[450px] overflow-auto flex flex-col justify-between ">
             <CardHeader>
-                <CardTitle> {book.title}</CardTitle>
+                <CardTitle>
+                    {" "}
+                    {book.title}{" "}
+                    <p className="text-slate-600 inline"> #{book.id}</p>
+                </CardTitle>
                 <CardDescription>by {book.authors}</CardDescription>
             </CardHeader>
-            <CardContent>
-                <Button
-                    variant="outline"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        openBook(book.id);
-                    }}
-                >
-                    Open Book {loadingBookContent && <LoadingSpinner />}{" "}
-                    <BookIcon />
-                </Button>
-                <Button
-                    variant="destructive"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        onDelete(book.id);
-                    }}
-                >
-                    Remove
-                </Button>
-            </CardContent>
-            <CardFooter className="flex justify-between items-end">
+            <CardContent className="flex justify-between items-end">
                 <div className="bold">
                     Topics:
                     {book.subjects
@@ -67,6 +50,26 @@ export default function SmallBookCard({
                             )
                         )}
                 </div>
+            </CardContent>
+            <CardFooter className="flex flex-row justify-between">
+                <Button
+                    variant="outline"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        openBook(book.id);
+                    }}
+                >
+                    Open {loadingBookContent && <LoadingSpinner />} <BookIcon />
+                </Button>
+                <Button
+                    variant="destructive"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        onDelete(book.id);
+                    }}
+                >
+                    Remove
+                </Button>
             </CardFooter>
         </Card>
     );
