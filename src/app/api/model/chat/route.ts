@@ -103,8 +103,6 @@ export async function POST(request: Request) {
         event.plotEvent.involved.forEach((char) => char.character.characterName)
     );
 
-    console.log(instructions(character));
-
     const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
         generationConfig: {
