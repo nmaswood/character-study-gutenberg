@@ -1,6 +1,6 @@
 "use client";
 import { axiosClient } from "@/lib/axios-client";
-import { Book, useBookStore } from "@/stores/useBookStore";
+import { Book, LoadedBook, useBookStore } from "@/stores/useBookStore";
 import { useBookUIStore } from "@/stores/useBookUIStore";
 import axios from "axios";
 import { useState } from "react";
@@ -72,70 +72,63 @@ export default function useFetchBook() {
         }
     };
 
+    const checkIfBookIsAnalyzed = async (
+        bookId: string
+    ): Promise<{
+        isAnalyzed: boolean;
+        characters?: string[];
+        shortSummary?: string;
+    }> => {
+        {
+            try {
+                const analyzedBook: AnalyzeBookResponse = (
+                    await axios.get("/api/model/book/" + bookId)
+                ).data;
+
+                return {
+                    isAnalyzed: true,
+                    characters: analyzedBook.characters,
+                    shortSummary: analyzedBook.shortSummary,
+                };
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.log({
+                        error: {
+                            cause: error.cause,
+                            code: error.code,
+                            message: "Book is not analyzed",
+                        },
+                    });
+                }
+                return { isAnalyzed: false };
+            }
+        }
+    };
+
     const openBook = async (bookId: string) => {
         setLoadingBookContent(true);
 
         const book = getBook(bookId);
+        let loadedBook: LoadedBook;
 
-        if (isLoadedBook(book)) {
-            try {
-                const analyzedBook: AnalyzeBookResponse = (
-                    await axios.get("/api/model/book/" + bookId)
-                ).data;
-                setOpenedBook({
-                    ...book,
-                    isAnalyzed: true,
-                    characters: analyzedBook.characters,
-                    shortSummary: analyzedBook.shortSummary,
-                });
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    console.error({
-                        error: {
-                            cause: error.cause,
-                            code: error.code,
-                        },
-                    });
-
-                    if (error.response?.status === 404) {
-                        console.error("Book not analyzed");
-                    }
-                }
-
-                setOpenedBook(book);
-            }
-        } else {
+        if (!isLoadedBook(book)) {
             const bookContent = await fetchBookContent(bookId);
-            const loadedBook = loadBookContent(bookId, bookContent);
-
-            try {
-                const analyzedBook: AnalyzeBookResponse = (
-                    await axios.get("/api/model/book/" + bookId)
-                ).data;
-
-                setOpenedBook({
-                    ...loadedBook,
-                    isAnalyzed: true,
-                    characters: analyzedBook.characters,
-                    shortSummary: analyzedBook.shortSummary,
-                });
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    console.error({
-                        error: {
-                            cause: error.cause,
-                            code: error.code,
-                        },
-                    });
-
-                    if (error.response?.status === 404) {
-                        console.error("Book not analyzed");
-                    }
-                }
-
-                setOpenedBook(loadedBook);
-            }
+            loadedBook = loadBookContent(bookId, bookContent);
+        } else {
+            loadedBook = book;
         }
+
+        const { isAnalyzed, characters, shortSummary } =
+            await checkIfBookIsAnalyzed(bookId);
+
+        if (isAnalyzed) {
+            setOpenedBook({
+                ...loadedBook,
+                isAnalyzed: true,
+                characters: characters,
+                shortSummary: shortSummary,
+            });
+        } else setOpenedBook(loadedBook);
 
         setLoadingBookContent(false);
     };

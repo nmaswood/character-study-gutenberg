@@ -23,6 +23,7 @@ export type Book = {
     authors: string;
     subjects: string[];
     languages: string[];
+    fetchDate: Date;
 };
 
 export type LoadedBook = Book & {
@@ -59,6 +60,7 @@ export const useBookStore = create<BookState & BookAction>()(
                                     author.name.split(",").reverse().join(" ")
                                 )
                                 .join(", "),
+                            fetchDate: new Date(),
                         },
                     ],
                 })),

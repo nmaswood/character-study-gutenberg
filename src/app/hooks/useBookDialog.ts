@@ -10,6 +10,18 @@ import { AnalyzeBookResponse } from "../api/model/book/analyze/route";
 export default function useBookDialog() {
     const { openedBook, closeBook, setOpenedBook } = useBookUIStore();
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [activeCharacter, setActiveCharacter] = useState<string | null>(null);
+
+    const handleChatOpen = (character: string) => {
+        setActiveCharacter(character);
+        setIsChatOpen(true);
+    };
+
+    const handleCloseChat = () => {
+        setIsChatOpen(false);
+        setActiveCharacter(null);
+    };
 
     const analyzeBook = async (book: LoadedBook) => {
         setIsAnalyzing(true);
@@ -52,14 +64,19 @@ export default function useBookDialog() {
     const onOpenChange = (open: boolean) => {
         if (!open) {
             closeBook();
+            handleCloseChat();
         }
     };
 
     return {
+        activeCharacter,
         analyzeBook,
-        totalCount,
+        handleChatOpen,
+        handleCloseChat,
+        isAnalyzing,
+        isChatOpen,
         onOpenChange,
         openedBook,
-        isAnalyzing,
+        totalCount,
     };
 }
