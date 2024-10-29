@@ -7,13 +7,20 @@ import { encode } from "gpt-tokenizer";
 import { useMemo, useState } from "react";
 import { AnalyzeBookResponse } from "../api/model/book/analyze/route";
 
+export type Character = {
+    characterName: string;
+    id: number;
+};
+
 export default function useBookDialog() {
     const { openedBook, closeBook, setOpenedBook } = useBookUIStore();
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
-    const [activeCharacter, setActiveCharacter] = useState<string | null>(null);
+    const [activeCharacter, setActiveCharacter] = useState<Character | null>(
+        null
+    );
 
-    const handleChatOpen = (character: string) => {
+    const handleChatOpen = (character: Character) => {
         setActiveCharacter(character);
         setIsChatOpen(true);
     };

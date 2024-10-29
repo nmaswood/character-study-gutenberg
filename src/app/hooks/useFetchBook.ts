@@ -7,6 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { FetchedBook } from "../../stores/useBookStore";
 import { AnalyzeBookResponse } from "../api/model/book/analyze/route";
+import { Character } from "./useBookDialog";
 
 export default function useFetchBook() {
     const [bookId, setBookId] = useState("");
@@ -76,7 +77,7 @@ export default function useFetchBook() {
         bookId: string
     ): Promise<{
         isAnalyzed: boolean;
-        characters?: string[];
+        characters?: Character[];
         shortSummary?: string;
     }> => {
         {
@@ -99,7 +100,11 @@ export default function useFetchBook() {
                             message: "Book is not analyzed",
                         },
                     });
+                    if (error.code === "ERR_BAD_RESPONSE") {
+                        throw new Error(error.message);
+                    }
                 }
+
                 return { isAnalyzed: false };
             }
         }
@@ -118,17 +123,20 @@ export default function useFetchBook() {
             loadedBook = book;
         }
 
-        const { isAnalyzed, characters, shortSummary } =
-            await checkIfBookIsAnalyzed(bookId);
-
-        if (isAnalyzed) {
-            setOpenedBook({
-                ...loadedBook,
-                isAnalyzed: true,
-                characters: characters,
-                shortSummary: shortSummary,
-            });
-        } else setOpenedBook(loadedBook);
+        try {
+            const { isAnalyzed, characters, shortSummary } =
+                await checkIfBookIsAnalyzed(bookId);
+            if (isAnalyzed) {
+                setOpenedBook({
+                    ...loadedBook,
+                    isAnalyzed: true,
+                    characters: characters,
+                    shortSummary: shortSummary,
+                });
+            } else setOpenedBook(loadedBook);
+        } catch (err) {
+            console.error(err);
+        }
 
         setLoadingBookContent(false);
     };

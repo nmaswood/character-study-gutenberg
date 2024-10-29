@@ -11,7 +11,11 @@ export default function BookList() {
     return (
         <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 w-fit ">
             {localBooks
-                .sort((a, b) => b.fetchDate.getTime() - a.fetchDate.getTime())
+                .sort(
+                    (a, b) =>
+                        new Date(b.fetchDate).getTime() -
+                        new Date(a.fetchDate).getTime()
+                )
                 .map((book, i) => (
                     <SmallBookCard
                         key={i}

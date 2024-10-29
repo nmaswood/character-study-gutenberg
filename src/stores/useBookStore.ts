@@ -29,7 +29,10 @@ export type Book = {
 export type LoadedBook = Book & {
     bookContent: string;
     isAnalyzed: boolean;
-    characters?: string[];
+    characters?: {
+        id: number;
+        characterName: string;
+    }[];
     shortSummary?: string;
 };
 
@@ -50,9 +53,9 @@ export const useBookStore = create<BookState & BookAction>()(
         (set, get) => ({
             localBooks: [],
             addBook: (book: FetchedBook) =>
-                set(() => ({
+                set((state) => ({
                     localBooks: [
-                        ...get().localBooks,
+                        ...state.localBooks,
                         {
                             ...book,
                             authors: book.authors
@@ -74,8 +77,8 @@ export const useBookStore = create<BookState & BookAction>()(
                 return book;
             },
             removeBook: (bookId: string) =>
-                set(() => ({
-                    localBooks: get().localBooks.filter(
+                set((state) => ({
+                    localBooks: state.localBooks.filter(
                         (book) => book.id !== bookId
                     ),
                 })),

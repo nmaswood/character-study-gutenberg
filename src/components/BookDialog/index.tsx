@@ -12,6 +12,8 @@ import { formatNumber } from "../../lib/utils";
 import useBookDialog from "@/app/hooks/useBookDialog";
 import BookReader from "../BookList/BookReader";
 import { LoadingSpinner } from "../ui/loading-spinner";
+import ChatDialog from "./ChatDialog";
+import { handlePreload } from "@/app/hooks/useChatDialog";
 
 export default function BookDialog() {
     const {
@@ -31,7 +33,7 @@ export default function BookDialog() {
     return (
         <Dialog open={openedBook !== null} onOpenChange={onOpenChange}>
             <DialogContent
-                className={`flex min-h-1/2 max-h-[600px] transition-all duration-300 min-w-[800px] pr-12 ${
+                className={`flex min-h-1/2 max-h-[750px] transition-all duration-300 min-w-[800px] pr-12 ${
                     isChatOpen ? "sm:max-w-[80vw]" : "sm:max-w-1/2"
                 }`}
             >
@@ -79,8 +81,14 @@ export default function BookDialog() {
                                                             character
                                                         )
                                                     }
+                                                    onMouseOver={async () =>
+                                                        handlePreload(
+                                                            character.id
+                                                        )
+                                                    }
                                                 >
-                                                    Chat with {character}
+                                                    Chat with{" "}
+                                                    {character.characterName}
                                                 </Button>
                                             </div>
                                         )
@@ -110,23 +118,10 @@ export default function BookDialog() {
 
                 {/* Right section - Chat panel, only visible when a character is selected */}
                 {isChatOpen && activeCharacter && (
-                    <div className="w-1/2 p-4 border-l">
-                        <DialogTitle>Chat with {activeCharacter}</DialogTitle>
-                        <div className="text-muted-foreground">
-                            {/* Placeholder for the chat window */}
-                            This is where the chat window with {
-                                activeCharacter
-                            }{" "}
-                            will appear.
-                        </div>
-                        <Button
-                            variant="outline"
-                            onClick={handleCloseChat}
-                            className="mt-4"
-                        >
-                            Close Chat
-                        </Button>
-                    </div>
+                    <ChatDialog
+                        activeCharacter={activeCharacter}
+                        handleCloseChat={handleCloseChat}
+                    />
                 )}
             </DialogContent>
             <DialogFooter>{/* Footer if needed */}</DialogFooter>
