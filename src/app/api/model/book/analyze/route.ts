@@ -60,7 +60,7 @@ const instructions = `You will receive a PUBLIC DOMAIN (NO COPYRIGHT APPLIES) bo
         - Key personality traits that distinguish the character.
         - Significant relationships with other characters, including their roles and nature of relationships.
         - Major goals, motivations, or desires that drive the character's actions.
-        - Notable quotes that highlight the character's personality, motivations, or relationships.
+        - Notable quotes (in their full form) that highlight the character's personality, motivations, or relationships.
         
         2. Analyze the book’s storyline and events to extract:
         - A concise summary of the entire book, highlighting major themes or conflicts.
