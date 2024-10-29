@@ -1,8 +1,7 @@
-import { genAI } from "@/gemini";
+import { genAI, safetySettings } from "@/gemini";
 import { BookAnalysisSchema } from "@/gemini/schema";
 import { prisma } from "@/prisma/client";
 import { LoadedBook } from "@/stores/useBookStore";
-import { HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { Character, CharactersOnEvents, PlotEvent } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -30,26 +29,6 @@ export type AnalyzeBookResponse = {
         quotes: string[];
     }[];
 };
-
-// The error happens even if safety settings are set to block none.
-const safetySettings = [
-    {
-        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-        threshold: HarmBlockThreshold.BLOCK_NONE,
-    },
-    {
-        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-        threshold: HarmBlockThreshold.BLOCK_NONE,
-    },
-    {
-        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-        threshold: HarmBlockThreshold.BLOCK_NONE,
-    },
-    {
-        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold: HarmBlockThreshold.BLOCK_NONE,
-    },
-];
 
 const instructions = `You will receive a PUBLIC DOMAIN (NO COPYRIGHT APPLIES) book in JSON format under the 'bookContent' field. 
         Your task is to:
