@@ -54,14 +54,10 @@ export const useChatStore = create<ChatState & ChatAction>()(
             clearHistory: (characterId: number) => {
                 set((state) => ({
                     ...state,
-                    userChats: state.userChats.map((chat) => {
-                        if (chat.characterId === characterId) {
-                            return {
-                                ...chat,
-                                history: [],
-                            };
+                    userChats: state.userChats.filter((chat) => {
+                        if (chat.characterId !== characterId) {
+                            return chat;
                         }
-                        return chat;
                     }),
                 }));
             },
