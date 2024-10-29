@@ -8,8 +8,9 @@ import { useMemo, useState } from "react";
 import { AnalyzeBookResponse } from "../api/model/book/analyze/route";
 
 export type Character = {
-    characterName: string;
     id: number;
+    characterName: string;
+    quotes: string[];
 };
 
 export default function useBookDialog() {

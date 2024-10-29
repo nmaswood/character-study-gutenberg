@@ -1,22 +1,8 @@
 import { useChatStore } from "@/stores/useChatStore";
 import { useMemo } from "react";
 import { Character } from "./useBookDialog";
-import useSWR, { preload } from "swr";
-import axios from "axios";
-import { CharacterResponse } from "../api/character/[characterId]/route";
-
-const axiosGetter = async (url: string) =>
-    await axios.get(url).then((response) => response.data as CharacterResponse);
-
-export const handlePreload = (id: number) =>
-    preload("/api/character/" + id, axiosGetter);
 
 export const useChatDialog = (character: Character) => {
-    const { data: characterData, isLoading: characterLoading } = useSWR(
-        "/api/character/" + character.id,
-        axiosGetter
-    );
-
     const { userChats, createChat, updateChatHistory, clearHistory } =
         useChatStore();
 
@@ -45,11 +31,8 @@ export const useChatDialog = (character: Character) => {
 
     return {
         sendMessage,
-        handlePreload,
         chatHistory,
         clearHistory,
         createChat,
-        characterLoading,
-        characterData,
     };
 };

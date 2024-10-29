@@ -1,7 +1,8 @@
 import { prisma } from "@/prisma/client";
 import { NextResponse } from "next/server";
+import { AnalyzeBookResponse } from "../analyze/route";
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<NextResponse> {
     const url = new URL(request.url);
     const bookId = url.pathname.split("/").pop();
 
@@ -19,9 +20,12 @@ export async function GET(request: Request) {
         return new NextResponse(null, { status: 404 });
     }
 
-    return NextResponse.json({
-        bookId: book.id,
-        characters: book.characters.map((character) => character.characterName),
+    return NextResponse.json<AnalyzeBookResponse>({
+        characters: book.characters.map((character) => ({
+            id: character.id,
+            characterName: character.characterName,
+            quotes: character.quotes,
+        })),
         shortSummary: book.shortSummary,
     });
 }

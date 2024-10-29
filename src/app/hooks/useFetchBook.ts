@@ -34,19 +34,25 @@ export default function useFetchBook() {
                 return;
             }
 
-            const response = await fetch(`/api/book/${bookId}/metadata`);
+            const response = await axios.get(`/api/book/${bookId}/metadata`);
 
             if (response.status === 404) {
                 toast.error("Book could not be found");
                 return;
             }
 
-            book = (await response.json()) as FetchedBook;
+            book = response.data as FetchedBook;
 
             if (book) {
                 toast.success("Book successfully fetched");
 
                 addBook(book);
+            }
+        } catch (error) {
+            toast.error("Something went wrong");
+
+            if (axios.isAxiosError(error)) {
+                console.error(error);
             }
         } finally {
             setLoading(false);

@@ -32,6 +32,7 @@ export type LoadedBook = Book & {
     characters?: {
         id: number;
         characterName: string;
+        quotes: string[];
     }[];
     shortSummary?: string;
 };

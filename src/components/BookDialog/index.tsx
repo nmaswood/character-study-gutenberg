@@ -13,7 +13,6 @@ import useBookDialog from "@/app/hooks/useBookDialog";
 import BookReader from "../BookList/BookReader";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import ChatDialog from "./ChatDialog";
-import { handlePreload } from "@/app/hooks/useChatDialog";
 
 export default function BookDialog() {
     const {
@@ -79,11 +78,6 @@ export default function BookDialog() {
                                                     onClick={() =>
                                                         handleChatOpen(
                                                             character
-                                                        )
-                                                    }
-                                                    onMouseOver={async () =>
-                                                        handlePreload(
-                                                            character.id
                                                         )
                                                     }
                                                 >

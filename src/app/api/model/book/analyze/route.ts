@@ -24,7 +24,11 @@ type BookAnalysisGeminiResponse = {
 
 export type AnalyzeBookResponse = {
     shortSummary: string;
-    characters: string[];
+    characters: {
+        id: number;
+        characterName: string;
+        quotes: string[];
+    }[];
 };
 
 // The error happens even if safety settings are set to block none.
@@ -182,11 +186,13 @@ export async function POST(request: Request) {
             }
         );
 
-        return NextResponse.json({
+        return NextResponse.json<AnalyzeBookResponse>({
             shortSummary: analysis.shortSummary,
-            characters: analysis.characters.map(
-                (character) => character.characterName
-            ),
+            characters: analysis.characters.map((character) => ({
+                id: character.id,
+                characterName: character.characterName,
+                quotes: character.quotes,
+            })),
         });
     } catch (error) {
         console.error(error);

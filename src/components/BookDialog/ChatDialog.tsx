@@ -1,7 +1,6 @@
 import { useChatDialog } from "@/app/hooks/useChatDialog";
 import { Button } from "../ui/button";
 import { Character } from "@/app/hooks/useBookDialog";
-import { Skeleton } from "../ui/skeleton";
 import { Input } from "../ui/input";
 import { Send } from "lucide-react";
 export default function ChatDialog({
@@ -11,8 +10,7 @@ export default function ChatDialog({
     activeCharacter: Character;
     handleCloseChat: () => void;
 }) {
-    const { characterData, characterLoading, chatHistory } =
-        useChatDialog(activeCharacter);
+    const { chatHistory } = useChatDialog(activeCharacter);
 
     return (
         <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col">
@@ -22,19 +20,18 @@ export default function ChatDialog({
                     <div className="flex flex-col leading-tight transition-all duration-300">
                         <div className="text-2xl mt-1 flex items-center">
                             <span className="text-gray-700 mr-3">
-                                {characterLoading ? (
-                                    <Skeleton className="h-10 w-[250px]" />
-                                ) : (
-                                    activeCharacter.characterName
-                                )}
+                                {activeCharacter.characterName}
                             </span>
                         </div>
                         <span className="text-lg text-gray-600">
-                            {characterLoading ? (
-                                <Skeleton className="mt-5 h-4 w-[450px]" />
-                            ) : (
-                                `"${characterData?.quote}"`
-                            )}
+                            {`"${
+                                activeCharacter?.quotes[
+                                    Math.floor(
+                                        Math.random() *
+                                            activeCharacter?.quotes.length
+                                    )
+                                ]
+                            }"`}
                         </span>
                     </div>
                 </div>
