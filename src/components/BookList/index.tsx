@@ -5,9 +5,10 @@ import BookDialog from "../BookDialog";
 import SmallBookCard from "./SmallBookCard";
 
 export default function BookList() {
-    const { localBooks, removeBook } = useBookStore();
+    const { localBooks, removeBook, _hasHydrated } = useBookStore();
 
-    console.log(localBooks);
+    if (!_hasHydrated) return <>loading</>;
+
     return (
         <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 w-fit ">
             {localBooks

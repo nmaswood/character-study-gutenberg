@@ -39,6 +39,7 @@ export type LoadedBook = Book & {
 
 type BookState = {
     localBooks: Array<Book | LoadedBook>;
+    _hasHydrated: boolean;
 };
 
 type BookAction = {
@@ -47,6 +48,7 @@ type BookAction = {
     removeBook: (bookId: string) => void;
     isLoadedBook: (book: Book | LoadedBook) => book is LoadedBook;
     loadBookContent: (bookId: string, bookContent: string) => LoadedBook;
+    setHasHydrated: (state: boolean) => void;
 };
 
 export const useBookStore = create<BookState & BookAction>()(
@@ -108,10 +110,19 @@ export const useBookStore = create<BookState & BookAction>()(
             },
             isLoadedBook: (book: Book | LoadedBook): book is LoadedBook =>
                 (book as LoadedBook).bookContent !== undefined,
+            _hasHydrated: false,
+            setHasHydrated: (state: boolean) => {
+                set({
+                    _hasHydrated: state,
+                });
+            },
         }),
         {
             name: "book-store",
             storage: createJSONStorage(() => localStorage),
+            onRehydrateStorage: (state) => {
+                return () => state.setHasHydrated(true);
+            },
         }
     )
 );
