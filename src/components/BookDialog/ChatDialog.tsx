@@ -14,6 +14,8 @@ export default function ChatDialog({
         characterName,
         characterQuote,
         chatHistory,
+        streamingResponse,
+        currentResponse,
         handleClearHistory,
         handleMessageContentUpdate,
         handleSendMessage,
@@ -41,7 +43,11 @@ export default function ChatDialog({
                             </span>
                         </div>
                         <span className="text-lg text-gray-600">
-                            {`"${characterQuote}"`}
+                            {`${
+                                characterQuote[0] === '"'
+                                    ? characterQuote
+                                    : `"${characterQuote}"`
+                            }`}
                         </span>
                     </div>
                 </div>
@@ -62,15 +68,28 @@ export default function ChatDialog({
                         </span>
                     </div>
                 ) : (
-                    chatHistory.map((chatMessage, i) => (
-                        <div key={i}>
-                            {chatMessage.role === "model" ? (
-                                <ModelMessage message={chatMessage.message} />
-                            ) : (
-                                <UserMessage message={chatMessage.message} />
-                            )}
-                        </div>
-                    ))
+                    [
+                        ...chatHistory.map((chatMessage, i) => (
+                            <div key={i}>
+                                {chatMessage.role === "model" ? (
+                                    <ModelMessage
+                                        message={chatMessage.message}
+                                    />
+                                ) : (
+                                    <UserMessage
+                                        message={chatMessage.message}
+                                    />
+                                )}
+                            </div>
+                        )),
+                        streamingResponse ? (
+                            <div key={chatHistory.length}>
+                                <ModelMessage message={currentResponse} />
+                            </div>
+                        ) : (
+                            <div key={chatHistory.length} />
+                        ),
+                    ]
                 )}
             </div>
             {/* Textbox and send button */}
