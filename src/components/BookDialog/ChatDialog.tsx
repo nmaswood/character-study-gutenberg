@@ -20,6 +20,7 @@ export default function ChatDialog({
         handleMessageContentUpdate,
         handleSendMessage,
         messageContent,
+        messagesEndRef,
     } = useChatDialog(activeCharacter);
 
     return (
@@ -91,6 +92,7 @@ export default function ChatDialog({
                         ),
                     ]
                 )}
+                <div ref={messagesEndRef} />
             </div>
             {/* Textbox and send button */}
             <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">

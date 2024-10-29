@@ -1,19 +1,27 @@
 import { useChatStore } from "@/stores/useChatStore";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Character } from "./useBookDialog";
 
 export const useChatDialog = (character: Character) => {
     const [messageContent, setMessageContent] = useState("");
     const [currentResponse, setCurrentResponse] = useState("");
     const [streamingResponse, setStreamingResponse] = useState(false);
-
     const [characterName, setCharacterName] = useState(character.characterName);
     const [characterQuote, setCharacterQuote] = useState(
         character.quotes[Math.floor(Math.random() * character.quotes.length)]
     );
 
+    const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
     const { userChats, createChat, updateChatHistory, clearHistory } =
         useChatStore();
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [userChats, streamingResponse]);
 
     useEffect(() => {
         setCharacterName(character.characterName);
@@ -119,6 +127,7 @@ export const useChatDialog = (character: Character) => {
         handleMessageContentUpdate,
         handleSendMessage,
         messageContent,
+        messagesEndRef,
         streamingResponse,
     };
 };
