@@ -12,7 +12,7 @@ export default function BookReader({ bookContent }: { bookContent: string }) {
 
 	if (!showReader)
 		return (
-			<div className="flex w-full flex-row items-center justify-center pt-4 transition-all duration-300">
+			<div className="flex w-full flex-row items-center justify-start pt-8 transition-all duration-300">
 				<Button variant={"secondary"} onClick={() => handleReaderToggle()}>
 					Read Book
 				</Button>
@@ -20,7 +20,7 @@ export default function BookReader({ bookContent }: { bookContent: string }) {
 		);
 
 	return (
-		<div className="flex flex-col items-center justify-between gap-3 overflow-hidden pt-10 transition-all duration-300 lg:max-w-screen-sm">
+		<div className="flex flex-col items-start justify-between gap-3 overflow-hidden pt-10 transition-all duration-300 lg:max-w-screen-sm">
 			<ScrollArea
 				className={`max-h-[524px] overflow-y-auto whitespace-pre-wrap rounded-md border p-4 text-sm ${courier.className}`}
 			>

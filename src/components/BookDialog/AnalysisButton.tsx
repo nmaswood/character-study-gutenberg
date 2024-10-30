@@ -78,21 +78,23 @@ const AnalysisButton = ({
 	}, [remainingMessages]);
 
 	return (
-		<Button
-			type="button"
-			disabled={isAnalyzing}
-			onClick={handleAnalyze()}
-			className={`md:disable:flex-row transition-all duration-300 disabled:min-w-fit disabled:max-w-[450px] disabled:items-center disabled:justify-start disabled:whitespace-normal disabled:bg-transparent disabled:py-4 disabled:text-left disabled:text-white disabled:opacity-100 disabled:shadow-none md:flex md:disabled:bg-[#8f8053]`}
-		>
-			{isAnalyzing ? (
-				<>
-					<LoadingSpinner />
-					{currentMessage} {count.toFixed(1)}(s)
-				</>
-			) : (
-				"Analyze Book"
-			)}
-		</Button>
+		<div className="flex flex-row items-center justify-center pr-4 pt-4 text-left">
+			<Button
+				type="button"
+				disabled={isAnalyzing}
+				onClick={handleAnalyze()}
+				className={`md:disable:flex-row align-self-center flex min-w-fit transition-all duration-300 disabled:min-w-fit disabled:max-w-[450px] disabled:items-center disabled:justify-start disabled:whitespace-normal disabled:bg-transparent disabled:py-4 disabled:text-left disabled:text-white disabled:opacity-100 disabled:shadow-none md:flex md:disabled:bg-[#8f8053]`}
+			>
+				{isAnalyzing ? (
+					<>
+						<LoadingSpinner />
+						{currentMessage} {count.toFixed(1)}(s)
+					</>
+				) : (
+					"Analyze Book"
+				)}
+			</Button>
+		</div>
 	);
 };
 

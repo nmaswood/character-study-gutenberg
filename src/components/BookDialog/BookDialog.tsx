@@ -93,9 +93,7 @@ export default function BookDialog() {
 									</div>
 								</div>
 							) : (
-								<div className="flex flex-row items-center justify-start pr-4 pt-4 text-left">
-									<AnalysisButton isAnalyzing={isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />
-								</div>
+								<AnalysisButton isAnalyzing={isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />
 							)}
 						</div>
 						<DialogDescription>{/* Additional content like the book's metadata or summary */}</DialogDescription>
