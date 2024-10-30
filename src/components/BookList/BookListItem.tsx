@@ -17,12 +17,14 @@ export default function BookListItem({ book, onDelete }: { book: Book; onDelete:
 
   return (
     <TableRow>
-      <TableCell className="w-fit font-thin">{book.id}</TableCell>
-      <TableCell className="max-w-4 truncate font-medium">{book.title}</TableCell>
-      <TableCell className="">{book.authors}</TableCell>
-      <TableCell>{new Date(book.fetchDate).toUTCString()}</TableCell>
-      <TableCell>{book.languages.join(", ")}</TableCell>
-      <TableCell className="flex flex-row items-center justify-end gap-2">
+      <TableCell className="hidden w-fit md:table-cell lg:table-cell">{book.id}</TableCell>
+      <TableCell className="max-w-1 truncate text-xs font-medium md:max-w-4 md:text-sm">{book.title}</TableCell>
+      <TableCell className="max-w-1 truncate text-xs font-medium md:max-w-4 md:text-sm">{book.authors}</TableCell>
+      <TableCell className="hidden md:table-cell lg:table-cell">
+        {new Date(book.fetchDate).toLocaleDateString()}
+      </TableCell>
+      <TableCell className="hidden md:table-cell lg:table-cell">{book.languages.join(", ")}</TableCell>
+      <TableCell className="flex flex-row items-center justify-end gap-2 md:flex lg:flex">
         <Button
           variant="outline"
           onClick={(e) => {
@@ -30,7 +32,8 @@ export default function BookListItem({ book, onDelete }: { book: Book; onDelete:
             openBook(book.id);
           }}
         >
-          {loadingBookContent ? <LoadingSpinner /> : "Open"} <BookIcon />
+          {loadingBookContent ? <LoadingSpinner /> : <div className="hidden md:inline lg:inline">Open</div>}{" "}
+          <BookIcon />
         </Button>
         <Button variant="destructive" onClick={handleDelete(book.id)}>
           <Trash2 />
