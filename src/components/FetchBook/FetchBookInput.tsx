@@ -2,37 +2,61 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useFetchBook from "../../app/hooks/useFetchBook";
-import { Search } from "lucide-react";
+import { Moon, Search, Sun } from "lucide-react";
 import { LoadingSpinner } from "../ui/loading-spinner";
+import { useTheme } from "next-themes";
 
 export default function FetchBookInput() {
-    const { bookId, onBookIdChange, fetchBookMetadata, loading } =
-        useFetchBook();
+  const { bookId, onBookIdChange, fetchBookMetadata, loading } = useFetchBook();
+  const { setTheme, theme } = useTheme();
 
-    return (
-        <form
-            className="flex w-full max-w-sm items-center justify-center space-x-2 min-w-full gap-x-10 border-4"
-            onSubmit={async (e) => {
-                e.preventDefault();
-                await fetchBookMetadata();
-            }}
-        >
-            <div className="relative w-full max-w-md">
-                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                    <Search className="w-5 h-5 text-gray-900" />
-                </div>
+  return (
+    <form
+      className="flex w-full min-w-full items-center justify-center gap-x-10 space-x-2"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await fetchBookMetadata();
+      }}
+    >
+      <div className="relative w-96 rounded-lg bg-white dark:bg-gray-800">
+        {/* Pink blur background covering the entire input area, including the button */}
+        <div className="absolute inset-0 z-[-1] rounded-lg bg-pink-200 opacity-75 blur-sm" />
 
-                <Input
-                    className="pl-10"
-                    type="search"
-                    placeholder="Book ID"
-                    onChange={onBookIdChange}
-                    value={bookId}
-                />
-            </div>
-            <Button type="submit" disabled={loading}>
-                Fetch Book {loading && <LoadingSpinner />}
-            </Button>
-        </form>
-    );
+        <div className="relative flex items-center">
+          <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
+            <Search className="h-5 w-5 text-gray-200" />
+          </div>
+
+          {/* Input field */}
+          <Input
+            className="w-full rounded-lg border-none py-4 pl-10 pr-16 focus:border-blue-300 dark:text-white"
+            type="search"
+            placeholder="Book ID"
+            onChange={onBookIdChange}
+            value={bookId}
+          />
+
+          {/* Button */}
+          <Button
+            className="absolute inset-y-0 right-0 flex items-center rounded-r-lg px-4 dark:bg-white dark:disabled:bg-zinc-50"
+            type="submit"
+            disabled={loading || bookId === ""}
+          >
+            Fetch Book {loading && <LoadingSpinner />}
+          </Button>
+        </div>
+      </div>
+      <div className="">
+        {theme === "light" ? (
+          <Button onClick={() => setTheme("dark")} variant={"ghost"} type="button">
+            <Moon />
+          </Button>
+        ) : (
+          <Button onClick={() => setTheme("light")} variant={"ghost"} type="button">
+            <Sun />
+          </Button>
+        )}
+      </div>
+    </form>
+  );
 }
