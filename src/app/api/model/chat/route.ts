@@ -4,32 +4,32 @@ import { Character } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 type ChatMessage = {
-    characterId: number;
-    history: {
-        role: "model" | "user";
-        message: string;
-    }[];
-    newMessage: string;
+  characterId: number;
+  history: {
+    role: "model" | "user";
+    message: string;
+  }[];
+  newMessage: string;
 };
 
 const instructions = (
-    character: Character & {
-        events: {
-            plotEvent: {
-                eventSummary: string;
-                involved: {
-                    character: {
-                        characterName: string;
-                    };
-                }[];
-            };
+  character: Character & {
+    events: {
+      plotEvent: {
+        eventSummary: string;
+        involved: {
+          character: {
+            characterName: string;
+          };
         }[];
-        book: {
-            shortSummary: string;
-        };
-    }
+      };
+    }[];
+    book: {
+      shortSummary: string;
+    };
+  },
 ) =>
-    `
+  `
 You will receive detailed information about a character from a book, along with a chat history between the user and this character. Your task is to fully embody this character in every response. Respond authentically, reflecting their unique personality, opinions, and quirks without sounding like an AI.
 
 Instructions:
@@ -58,9 +58,7 @@ Brevity is Key: Keep responses under 100 words, using every word to convey the c
 
 Example Responses:
 
-${character.quotes
-    .slice(0, Math.min(character.quotes.length - 1, 3))
-    .map((quote, i) => `Response ${1 + i}: ${quote}`)}
+${character.quotes.slice(0, Math.min(character.quotes.length - 1, 3)).map((quote, i) => `Response ${1 + i}: ${quote}`)}
 
 Character Background Information
 
@@ -72,99 +70,91 @@ Character Traits: ${character.traits.join(", ")}
 Character Goals: ${character.goals.join(", ")}
 Character Quotes: ${character.quotes.join(", ")}
 Notable Events: ${character.events
-        .map((event) => event.plotEvent)
-        .map((event) => `${event.eventSummary} `)
-        .join(", ")}
+    .map((event) => event.plotEvent)
+    .map((event) => `${event.eventSummary} `)
+    .join(", ")}
 `;
 
 export async function POST(request: Request) {
-    const data: ChatMessage = await request.json();
+  const data: ChatMessage = await request.json();
 
-    const character = await prisma.character.findUnique({
-        where: {
-            id: data.characterId,
-        },
-        include: {
-            events: {
+  const character = await prisma.character.findUnique({
+    where: {
+      id: data.characterId,
+    },
+    include: {
+      events: {
+        select: {
+          plotEvent: {
+            select: {
+              eventSummary: true,
+              involved: {
                 select: {
-                    plotEvent: {
-                        select: {
-                            eventSummary: true,
-                            involved: {
-                                select: {
-                                    character: true,
-                                },
-                            },
-                        },
-                    },
+                  character: true,
                 },
+              },
             },
-            book: {
-                select: {
-                    shortSummary: true,
-                },
-            },
+          },
         },
-    });
-
-    if (!character)
-        return NextResponse.json(
-            { message: "No character found" },
-            { status: 404 }
-        );
-
-    character.events.forEach((event) =>
-        event.plotEvent.involved.forEach((char) => char.character.characterName)
-    );
-
-    const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        generationConfig: {
-            responseMimeType: "text/plain",
-            // ~ 120 words
-            maxOutputTokens: 160,
-
-            // Keeps responses fairly focused on the provided details but allows for enough variability to make the character feel lively and interesting.
-            // If consistency is more important than unpredictability, 0.7 is a safe bet.
-            temperature: 0.7,
+      },
+      book: {
+        select: {
+          shortSummary: true,
         },
-        safetySettings,
-        systemInstruction: instructions(character),
-    });
+      },
+    },
+  });
 
-    const chatSession = model.startChat({
-        history: data.history.map((message) => ({
-            parts: [
-                {
-                    text: message.message,
-                },
-            ],
-            role: message.role,
-        })),
-    });
+  if (!character) return NextResponse.json({ message: "No character found" }, { status: 404 });
 
-    const { stream: upstreamResponse } = await chatSession.sendMessageStream(
-        data.newMessage
-    );
+  character.events.forEach((event) => event.plotEvent.involved.forEach((char) => char.character.characterName));
 
-    const stream = new ReadableStream({
-        async start(controller) {
-            try {
-                for await (const chunk of upstreamResponse) {
-                    // Convert the chunk to text and enqueue it to the ReadableStream
-                    const chunkText = chunk.text();
-                    controller.enqueue(new TextEncoder().encode(chunkText));
-                }
-            } catch (error) {
-                console.error("Error streaming data:", error);
-                controller.error(error);
-            } finally {
-                controller.close();
-            }
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {
+      responseMimeType: "text/plain",
+      // ~ 120 words
+      maxOutputTokens: 160,
+
+      // Keeps responses fairly focused on the provided details but allows for enough variability to make the character feel lively and interesting.
+      // If consistency is more important than unpredictability, 0.7 is a safe bet.
+      temperature: 0.7,
+    },
+    safetySettings,
+    systemInstruction: instructions(character),
+  });
+
+  const chatSession = model.startChat({
+    history: data.history.map((message) => ({
+      parts: [
+        {
+          text: message.message,
         },
-    });
+      ],
+      role: message.role,
+    })),
+  });
 
-    return new NextResponse(stream, {
-        headers: { "Content-Type": "text/event-stream" },
-    });
+  const { stream: upstreamResponse } = await chatSession.sendMessageStream(data.newMessage);
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        for await (const chunk of upstreamResponse) {
+          // Convert the chunk to text and enqueue it to the ReadableStream
+          const chunkText = chunk.text();
+          controller.enqueue(new TextEncoder().encode(chunkText));
+        }
+      } catch (error) {
+        console.error("Error streaming data:", error);
+        controller.error(error);
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new NextResponse(stream, {
+    headers: { "Content-Type": "text/event-stream" },
+  });
 }
