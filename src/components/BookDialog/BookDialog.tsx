@@ -11,9 +11,11 @@ import {
 import { formatNumber } from "../../lib/utils";
 import useBookDialog from "@/app/hooks/useBookDialog";
 import BookReader from "../BookList/BookReader";
-import { LoadingSpinner } from "../ui/loading-spinner";
 import ChatDialog from "./ChatDialog";
 import { courier } from "../fonts";
+import { MessageCircleMore, MessageCirclePlus } from "lucide-react";
+import { useChatStore } from "@/stores/useChatStore";
+import AnalysisButton from "./AnalysisButton";
 
 export default function BookDialog() {
 	const {
@@ -27,6 +29,12 @@ export default function BookDialog() {
 		openedBook,
 		totalCount,
 	} = useBookDialog();
+
+	const { userChats } = useChatStore();
+
+	const handleAnalyze = async () => {
+		await analyzeBook(openedBook!);
+	};
 
 	if (!openedBook) return <></>;
 
@@ -74,23 +82,19 @@ export default function BookDialog() {
 									<div className="grid w-full grid-flow-row grid-cols-2 gap-3 md:grid-cols-3 md:gap-2">
 										{openedBook.characters?.map((character, i) => (
 											<Button type="button" onClick={() => handleChatOpen(character)} key={i}>
-												Chat with {character.characterName}
+												{userChats.find((ch) => ch.characterId === character.id) ? (
+													<MessageCircleMore />
+												) : (
+													<MessageCirclePlus />
+												)}
+												{character.characterName}
 											</Button>
 										))}
 									</div>
 								</div>
 							) : (
-								<div className="flex flex-row justify-end pr-4">
-									<Button
-										type="button"
-										disabled={isAnalyzing}
-										onClick={async (e) => {
-											e.preventDefault();
-											await analyzeBook(openedBook);
-										}}
-									>
-										Analyze {isAnalyzing && <LoadingSpinner />}
-									</Button>
+								<div className="flex flex-row items-center justify-start pr-4 pt-4 text-left">
+									<AnalysisButton isAnalyzing={!isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />
 								</div>
 							)}
 						</div>
