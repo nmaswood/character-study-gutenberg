@@ -2789,6 +2789,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"idb-keyval@npm:3.0.0":
+  version: 3.0.0
+  resolution: "idb-keyval@npm:3.0.0"
+  checksum: 79af5243e07ded43a3e2126e64e2af4c951208c5ba39ca3bfba334d41df5131f079eb7f75d1713878c75330ebc07f9360f7d4184e5bc935951a95954a10fb201
+  languageName: node
+  linkType: hard
+
 "ignore@npm:^5.2.0, ignore@npm:^5.3.1":
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
@@ -3564,16 +3571,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-themes@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "next-themes@npm:0.3.0"
-  peerDependencies:
-    react: ^16.8 || ^17 || ^18
-    react-dom: ^16.8 || ^17 || ^18
-  checksum: 4285c4969eac517ad7addd773bcb71e7d14bc6c6e3b24eb97b80a6e06ac03fb6cb345e75dfb448156d14430d06289948eb8cfdeb52402ca7ce786093d01d2878
-  languageName: node
-  linkType: hard
-
 "next@npm:15.0.1":
   version: 15.0.1
   resolution: "next@npm:15.0.1"
@@ -4122,9 +4119,9 @@ __metadata:
     eslint-config-next: 15.0.1
     gpt-tokenizer: ^2.5.1
     groq-sdk: ^0.7.0
+    idb-keyval: 3.0.0
     lucide-react: ^0.453.0
     next: 15.0.1
-    next-themes: ^0.3.0
     postcss: ^8
     prettier: ^3.3.3
     prettier-plugin-tailwindcss: ^0.6.8
