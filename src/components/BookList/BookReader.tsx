@@ -1,56 +1,45 @@
-import { useEffect, useMemo, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import { Button } from "../ui/button";
-import { Label } from "../ui/label";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { courier } from "../fonts";
+import { useBookReader } from "@/app/hooks/useBookReader";
 
-const WORDS_PER_PAGE = 200;
+const WORDS_PER_PAGE = 150;
 
 export default function BookReader({ bookContent }: { bookContent: string }) {
-  const [currentPageNumber, setCurrentPageNumber] = useState(0);
-  const [currentPage, setCurrentPage] = useState(
-    bookContent
-      .split(" ")
-      .slice(currentPageNumber * WORDS_PER_PAGE, WORDS_PER_PAGE)
-      .join(" "),
-  );
+	const { currentPageNumber, prevPage, nextPage, currentPage, showReader, handleReaderToggle, pageStartRef } =
+		useBookReader(bookContent, WORDS_PER_PAGE);
 
-  const wordsInBook = useMemo(() => bookContent.split(" ").length, [bookContent]);
-  const prevPage = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setCurrentPageNumber(Math.max(0, currentPageNumber - 1));
-  };
+	if (!showReader)
+		return (
+			<div className="flex w-full flex-row items-center justify-center pt-4 transition-all duration-300">
+				<Button variant={"secondary"} onClick={() => handleReaderToggle()}>
+					Read Book
+				</Button>
+			</div>
+		);
 
-  const nextPage = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setCurrentPageNumber(Math.min(currentPageNumber + 1, Math.round(wordsInBook / WORDS_PER_PAGE)));
-  };
+	return (
+		<div className="flex flex-col items-center justify-between gap-3 overflow-hidden pt-10 transition-all duration-300 lg:max-w-screen-sm">
+			<ScrollArea
+				className={`max-h-[524px] overflow-y-auto whitespace-pre-wrap rounded-md border p-4 text-sm ${courier.className}`}
+			>
+				<div ref={pageStartRef} />
 
-  useEffect(() => {
-    const currentPageStart = currentPageNumber * WORDS_PER_PAGE;
-    const currentPageEnd = currentPageNumber * WORDS_PER_PAGE + WORDS_PER_PAGE;
-    const newCurrentPage = bookContent.split(" ").slice(currentPageStart, currentPageEnd).join(" ");
-
-    setCurrentPage(newCurrentPage);
-  }, [bookContent, currentPage, currentPageNumber]);
-
-  return (
-    <div className="max-h-screen overflow-hidden lg:max-w-screen-sm">
-      <div className="flex w-full flex-row justify-center pb-4">
-        <Label>Page {currentPageNumber + 1}</Label>
-      </div>
-      <ScrollArea className="h-[400px] overflow-y-auto whitespace-pre-wrap rounded-md border p-4">
-        {/* {bookContent} */}
-        {currentPage}
-      </ScrollArea>
-      <div className="flex w-full flex-row items-center justify-center gap-3">
-        <Button type="button" onClick={prevPage}>
-          {"<"}
-        </Button>
-        <div>Page {currentPageNumber + 1}</div>
-        <Button type="button" onClick={nextPage}>
-          {">"}
-        </Button>
-      </div>
-    </div>
-  );
+				{currentPage}
+			</ScrollArea>
+			<div className="flex w-full flex-row items-center justify-center gap-3">
+				<Button type="button" onClick={prevPage}>
+					<ChevronLeft />
+				</Button>
+				<div>Page {currentPageNumber + 1}</div>
+				<Button type="button" onClick={nextPage}>
+					<ChevronRight />
+				</Button>
+			</div>
+			<Button variant={"secondary"} onClick={() => handleReaderToggle()}>
+				Close Book
+			</Button>
+		</div>
+	);
 }
