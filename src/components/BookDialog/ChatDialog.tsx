@@ -49,7 +49,7 @@ export default function ChatDialog({
 				</Button>
 			</div>
 			{/* Chat Window */}
-			<div className="flex max-h-[300px] flex-col justify-start space-y-4 overflow-y-auto p-3">
+			<div className="flex max-h-[330px] min-h-[250px] flex-col justify-start space-y-4 overflow-y-auto p-3">
 				{chatHistory.length === 0 ? (
 					<div className="flex items-start justify-center">
 						<span className="inline-block px-4 py-2">Send your first message to start chatting...</span>
