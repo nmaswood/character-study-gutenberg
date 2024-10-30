@@ -2,12 +2,9 @@
 	"name": "prjct-gtnbrg-project",
 	"version": "0.1.0",
 	"private": true,
-	"engines": {
-		"node": "v18.9.1"
-	},
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build",
+		"build": "prisma generate && next build",
 		"start": "next start",
 		"lint": "next lint"
 	},
