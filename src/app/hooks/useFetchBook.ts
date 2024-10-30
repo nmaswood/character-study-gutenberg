@@ -143,7 +143,10 @@ export default function useFetchBook() {
     setLoadingBookContent(false);
   };
 
-  const onBookIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onBookIdChange = (e: React.ChangeEvent<HTMLInputElement> & { key: string }) => {
+    if (e.key == "Enter") {
+      e.target.blur();
+    }
     setBookId(e.target.value);
   };
 

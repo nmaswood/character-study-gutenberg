@@ -46,7 +46,7 @@ export default function BookDialog() {
 				}`}
 			>
 				{/* Left section - Book details */}
-				<div className={`flex-1 overflow-auto px-2 md:block ${isChatOpen ? "md:hidden md:border-r lg:block" : ""}`}>
+				<div className={`flex-1 overflow-auto px-2 md:block ${isChatOpen ? "hidden md:block md:border-r" : ""}`}>
 					<DialogHeader>
 						<DialogTitle>
 							<div>
