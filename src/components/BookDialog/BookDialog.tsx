@@ -41,7 +41,7 @@ export default function BookDialog() {
 	return (
 		<Dialog open={openedBook !== null} onOpenChange={onOpenChange}>
 			<DialogContent
-				className={`md:min-h-1/2 flex max-h-[750px] pr-12 transition-all duration-100 md:min-w-[800px] ${
+				className={`md:min-h-1/2 flex max-h-[750px] min-h-[700px] pr-12 transition-all duration-100 md:min-w-[800px] ${
 					isChatOpen ? "sm:max-w-[80vw]" : "sm:max-w-1/2"
 				}`}
 			>

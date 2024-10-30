@@ -25,7 +25,7 @@ export default function ChatDialog({
 	} = useChatDialog(activeCharacter);
 
 	return (
-		<div className="p:2 flex flex-1 flex-col justify-between sm:p-6">
+		<div className="p:2 flex flex-1 flex-col justify-start sm:p-4">
 			{/* Character Name and Header */}
 			<div className="flex justify-between border-b-2 border-gray-200 py-3 sm:items-center">
 				<div className="relative flex items-center space-x-4">
@@ -49,7 +49,7 @@ export default function ChatDialog({
 				</Button>
 			</div>
 			{/* Chat Window */}
-			<div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch flex flex-col justify-start space-y-4 overflow-y-auto p-3">
+			<div className="flex max-h-[300px] flex-col justify-start space-y-4 overflow-y-auto p-3">
 				{chatHistory.length === 0 ? (
 					<div className="flex items-start justify-center">
 						<span className="inline-block px-4 py-2">Send your first message to start chatting...</span>
