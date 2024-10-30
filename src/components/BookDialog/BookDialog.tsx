@@ -94,7 +94,7 @@ export default function BookDialog() {
 								</div>
 							) : (
 								<div className="flex flex-row items-center justify-start pr-4 pt-4 text-left">
-									<AnalysisButton isAnalyzing={!isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />
+									<AnalysisButton isAnalyzing={isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />
 								</div>
 							)}
 						</div>
