@@ -17,8 +17,8 @@ export default function BookListItem({ book, onDelete }: { book: Book; onDelete:
 
   return (
     <TableRow>
-      <TableCell className="font-thin w-fit ">{book.id}</TableCell>
-      <TableCell className="font-medium truncate max-w-4">{book.title}</TableCell>
+      <TableCell className="w-fit font-thin">{book.id}</TableCell>
+      <TableCell className="max-w-4 truncate font-medium">{book.title}</TableCell>
       <TableCell className="">{book.authors}</TableCell>
       <TableCell>{new Date(book.fetchDate).toUTCString()}</TableCell>
       <TableCell>{book.languages.join(", ")}</TableCell>

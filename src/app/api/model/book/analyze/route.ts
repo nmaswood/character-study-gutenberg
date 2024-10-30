@@ -6,28 +6,28 @@ import { Character, CharactersOnEvents, PlotEvent } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 type BookAnalysisGeminiResponse = {
-    characters: {
-        characterName: string;
-        traits: string[];
-        relationships: string[];
-        goals: string[];
-        quotes: string[];
-        tone: string;
-    }[];
-    plotEvents: {
-        eventSummary: string;
-        charactersInEvent: string[];
-    }[];
-    shortSummary: string;
+  characters: {
+    characterName: string;
+    traits: string[];
+    relationships: string[];
+    goals: string[];
+    quotes: string[];
+    tone: string;
+  }[];
+  plotEvents: {
+    eventSummary: string;
+    charactersInEvent: string[];
+  }[];
+  shortSummary: string;
 };
 
 export type AnalyzeBookResponse = {
-    shortSummary: string;
-    characters: {
-        id: number;
-        characterName: string;
-        quotes: string[];
-    }[];
+  shortSummary: string;
+  characters: {
+    id: number;
+    characterName: string;
+    quotes: string[];
+  }[];
 };
 
 const instructions = `You will receive a PUBLIC DOMAIN (NO COPYRIGHT APPLIES) book in JSON format under the 'bookContent' field. 
@@ -51,131 +51,118 @@ const instructions = `You will receive a PUBLIC DOMAIN (NO COPYRIGHT APPLIES) bo
         Return the analysis in JSON format in accordance with the schema.`;
 
 export async function POST(request: Request) {
-    const book: LoadedBook = await request.json();
+  const book: LoadedBook = await request.json();
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: BookAnalysisSchema,
-        },
-        safetySettings,
-        systemInstruction: instructions,
-    });
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: BookAnalysisSchema,
+    },
+    safetySettings,
+    systemInstruction: instructions,
+  });
 
-    try {
-        const result = await model.generateContent(JSON.stringify(book));
-        const response = result.response.text();
+  try {
+    const result = await model.generateContent(JSON.stringify(book));
+    const response = result.response.text();
 
-        const data: BookAnalysisGeminiResponse = JSON.parse(response);
+    const data: BookAnalysisGeminiResponse = JSON.parse(response);
 
-        const characters: Omit<Character, "id" | "bookId">[] =
-            data.characters.map((character) => ({
-                characterName: character.characterName,
-                goals: character.goals,
-                relationships: character.relationships,
-                traits: character.traits,
-                tone: character.tone,
-                quotes: character.quotes,
-            }));
+    const characters: Omit<Character, "id" | "bookId">[] = data.characters.map((character) => ({
+      characterName: character.characterName,
+      goals: character.goals,
+      relationships: character.relationships,
+      traits: character.traits,
+      tone: character.tone,
+      quotes: character.quotes,
+    }));
 
-        const plotEvents: Omit<PlotEvent, "id" | "bookId">[] =
-            data.plotEvents.map((plotEvent) => ({
-                eventSummary: plotEvent.eventSummary,
-            }));
+    const plotEvents: Omit<PlotEvent, "id" | "bookId">[] = data.plotEvents.map((plotEvent) => ({
+      eventSummary: plotEvent.eventSummary,
+    }));
 
-        const analysis = await prisma.$transaction(
-            async () => {
-                const savedAnalysis = await prisma.book.create({
-                    data: {
-                        id: book.id,
-                        shortSummary: data.shortSummary,
-                        characters: {
-                            createMany: {
-                                data: characters,
-                            },
-                        },
-                        plotEvents: {
-                            createMany: {
-                                data: plotEvents,
-                            },
-                        },
-                    },
-                    // Include the characters, plot events, and characters on events in the response.
-                    include: {
-                        characters: true,
-                        plotEvents: true,
-                    },
-                });
-
-                // Get the characters and plot events from the saved analysis.
-                const charactersOnEvents: CharactersOnEvents[] =
-                    savedAnalysis.plotEvents.reduce(
-                        (prev: CharactersOnEvents[], event) => {
-                            const charactersInEvent = data.plotEvents.find(
-                                (pEvent) =>
-                                    pEvent.eventSummary === event.eventSummary
-                            )?.charactersInEvent;
-
-                            if (charactersInEvent) {
-                                // Get the characters in the event and create a new entry in the characters on events table for each character.
-                                const currCharactersOnEvent: CharactersOnEvents[] =
-                                    savedAnalysis.characters.reduce(
-                                        (
-                                            prev: CharactersOnEvents[],
-                                            currCharacter
-                                        ) => {
-                                            if (
-                                                charactersInEvent.includes(
-                                                    currCharacter.characterName
-                                                )
-                                            )
-                                                return [
-                                                    ...prev,
-                                                    {
-                                                        // Link the character to the plot event.
-                                                        plotEventId: event.id,
-                                                        characterId:
-                                                            currCharacter.id,
-                                                    },
-                                                ];
-
-                                            return prev;
-                                        },
-                                        []
-                                    );
-
-                                // Add the new characters on events to the list.
-                                return [...prev, ...currCharactersOnEvent];
-                            }
-
-                            return prev;
-                        },
-                        []
-                    );
-
-                await prisma.charactersOnEvents.createMany({
-                    data: charactersOnEvents,
-                });
-
-                return savedAnalysis;
+    const analysis = await prisma.$transaction(
+      async () => {
+        const savedAnalysis = await prisma.book.create({
+          data: {
+            id: book.id,
+            shortSummary: data.shortSummary,
+            characters: {
+              createMany: {
+                data: characters,
+              },
             },
-            {
-                timeout: 10000,
+            plotEvents: {
+              createMany: {
+                data: plotEvents,
+              },
+            },
+          },
+          // Include the characters, plot events, and characters on events in the response.
+          include: {
+            characters: true,
+            plotEvents: true,
+          },
+        });
+
+        // Get the characters and plot events from the saved analysis.
+        const charactersOnEvents: CharactersOnEvents[] = savedAnalysis.plotEvents.reduce(
+          (prev: CharactersOnEvents[], event) => {
+            const charactersInEvent = data.plotEvents.find(
+              (pEvent) => pEvent.eventSummary === event.eventSummary,
+            )?.charactersInEvent;
+
+            if (charactersInEvent) {
+              // Get the characters in the event and create a new entry in the characters on events table for each character.
+              const currCharactersOnEvent: CharactersOnEvents[] = savedAnalysis.characters.reduce(
+                (prev: CharactersOnEvents[], currCharacter) => {
+                  if (charactersInEvent.includes(currCharacter.characterName))
+                    return [
+                      ...prev,
+                      {
+                        // Link the character to the plot event.
+                        plotEventId: event.id,
+                        characterId: currCharacter.id,
+                      },
+                    ];
+
+                  return prev;
+                },
+                [],
+              );
+
+              // Add the new characters on events to the list.
+              return [...prev, ...currCharactersOnEvent];
             }
+
+            return prev;
+          },
+          [],
         );
 
-        return NextResponse.json<AnalyzeBookResponse>({
-            shortSummary: analysis.shortSummary,
-            characters: analysis.characters.map((character) => ({
-                id: character.id,
-                characterName: character.characterName,
-                quotes: character.quotes,
-            })),
+        await prisma.charactersOnEvents.createMany({
+          data: charactersOnEvents,
         });
-    } catch (error) {
-        console.error(error);
 
-        return NextResponse.json(error, { status: 500 });
-    }
+        return savedAnalysis;
+      },
+      {
+        timeout: 10000,
+      },
+    );
+
+    return NextResponse.json<AnalyzeBookResponse>({
+      shortSummary: analysis.shortSummary,
+      characters: analysis.characters.map((character) => ({
+        id: character.id,
+        characterName: character.characterName,
+        quotes: character.quotes,
+      })),
+    });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(error, { status: 500 });
+  }
 }
