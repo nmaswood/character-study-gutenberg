@@ -41,7 +41,9 @@ export default function ChatDialog({
 								</button>
 							</span>
 						</div>
-						<span className="text-lg">{`${characterQuote[0] === '"' ? characterQuote : `"${characterQuote}"`}`}</span>
+						<span
+							className={`text-xs md:text-lg ${chatHistory.length !== 0 && "hidden"}`}
+						>{`${characterQuote[0] === '"' ? characterQuote : `"${characterQuote}"`}`}</span>
 					</div>
 				</div>
 				<Button variant="default" onClick={handleCloseChat} className="mt-4 self-end justify-self-end">
