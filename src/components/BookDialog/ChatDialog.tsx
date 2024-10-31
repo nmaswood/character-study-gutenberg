@@ -52,7 +52,7 @@ export default function ChatDialog({
 			</div>
 
 			{/* Chat Window */}
-			<div className="flex min-h-[250px] flex-col justify-start space-y-4 overflow-y-auto p-3">
+			<div className="flex max-h-fit min-h-[200px] flex-col justify-start space-y-4 overflow-y-auto p-3 md:max-h-fit">
 				{chatHistory.length === 0 ? (
 					<div className="flex items-start justify-center">
 						<span className="inline-block px-4 py-2">Send your first message to start chatting...</span>
@@ -92,7 +92,7 @@ export default function ChatDialog({
 			</div>
 
 			{/* Textbox and send button */}
-			<div className="mb-2 justify-self-end overflow-auto border-t-2 border-gray-200 px-4 pt-4 sm:mb-0">
+			<div className="mb-2 justify-self-end overflow-auto border-t-2 border-gray-200 px-4 pb-10 pt-4 sm:mb-0">
 				<form
 					className="relative flex"
 					onSubmit={(e) => {
