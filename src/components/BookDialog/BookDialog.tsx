@@ -51,7 +51,7 @@ export default function BookDialog() {
 	return (
 		<Dialog open={openedBook !== null} onOpenChange={onOpenChange}>
 			<DialogContent
-				className={`md:min-h-1/2 flex h-full max-h-[750px] min-h-[700px] pr-12 pt-10 transition-all duration-100 md:min-w-[800px] md:pr-8 ${
+				className={`md:min-h-1/2 md flex h-full min-h-[700px] pr-12 pt-10 transition-all duration-100 md:max-h-[750px] md:min-w-[800px] md:pr-8 ${
 					isChatOpen ? "sm:max-w-[80vw]" : "sm:max-w-1/2"
 				}`}
 			>
@@ -153,53 +153,3 @@ export default function BookDialog() {
 		</Dialog>
 	);
 }
-
-// const ChatSummaryWithLinks = ({
-//     shortSummary,
-//     characters,
-//     onCharacterClick,
-// }: {
-//     shortSummary: string;
-//     characters: Character[];
-//     onCharacterClick: (character: Character) => void;
-// }) => {
-//     if (!shortSummary) return null;
-
-//     const summaryElements = [];
-//     let remainingText = shortSummary;
-
-//     characters.forEach((character) => {
-//         const nameIndex = remainingText.indexOf(character.characterName);
-
-//         if (nameIndex !== -1) {
-//             // Add text before the character's name
-//             if (nameIndex > 0) {
-//                 summaryElements.push(remainingText.slice(0, nameIndex));
-//             }
-
-//             // Add a button for the character's name
-//             summaryElements.push(
-//                 <Button
-//                     key={character.id}
-//                     variant="link"
-//                     onClick={() => onCharacterClick(character)}
-//                     className="p-0 text-blue-600 hover:underline"
-//                 >
-//                     {character.characterName}
-//                 </Button>
-//             );
-
-//             // Update remainingText to continue after this character's name
-//             remainingText = remainingText.slice(
-//                 nameIndex + character.characterName.length
-//             );
-//         }
-//     });
-
-//     // Add any remaining text after processing all character names
-//     if (remainingText) {
-//         summaryElements.push(remainingText);
-//     }
-
-//     return <div className="font-normal italic">{summaryElements}</div>;
-// };
