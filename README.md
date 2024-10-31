@@ -1,10 +1,11 @@
 # Character Study via Project Gutenber
 
-This Next.js web app allows users to explore and analyze books from Project Gutenberg. Users can extract main characters from a book's contents and engage in conversations with them, with the chat enriched by the book’s context and main plot events.
+This Next.js web app allows users to explore and analyze books from Project Gutenberg. Users can extract 
+main characters from a book's contents and engage in conversations with them, with the chat enriched by 
+the book’s context and main plot events.
 
 Model: Gemini 1.5 Flash
 
-````markdown
 ## How Does It Work
 
 - **Book Metadata**  
@@ -13,7 +14,8 @@ Model: Gemini 1.5 Flash
   - Endpoint: `https://gutendex.com/books/ + bookID`
 
 - **Book Contents**  
-   Book contents are fetched directly from Project Gutenberg. This utility function finds the URL for each book, typically selecting from the following links:
+   Book contents are fetched directly from Project Gutenberg. This utility function finds the URL for each
+   book, typically selecting from the following links:
 
   ```javascript
   export const getBookMirrorDownloadLinks = (bookId: string): string[] => {
@@ -28,7 +30,6 @@ Model: Gemini 1.5 Flash
       ];
   };
   ```
-````
 
 - **Local Storage**  
    Book contents are stored locally using the browser's IndexedDB, which offers a much larger capacity (~500MB) compared to localStorage (limited to ~10MB).
@@ -46,7 +47,8 @@ Model: Gemini 1.5 Flash
   You will receive a PUBLIC DOMAIN (NO COPYRIGHT APPLIES) book in JSON format under the 'bookContent' field.
 
   Your task is to:
-  1. Identify all relevant and significant characters (maximum of five) within the content. For each character, extract and return the following details (maximum of 5 each):
+  1. Identify all relevant and significant characters (maximum of five) within the content. 
+  For each character, extract and return the following details (maximum of 5 each):
      - Full name of the character.
      - A tone analysis that quantifies the character's tone, including their time period, accent, and any distinctive quirks or language choices,
        to create a detailed description that can be used to authentically capture their voice and vibe in future writing.
@@ -76,7 +78,9 @@ Model: Gemini 1.5 Flash
 - Chat prompt:
 
   ```javascript
-  You will receive detailed information about a character from a book, along with a chat history between the user and this character. Your task is to fully embody this character in every response. Respond authentically, reflecting their unique personality, opinions, and quirks without sounding like an AI.
+  You will receive detailed information about a character from a book, along with a chat history between the user and this character.
+  Your task is to fully embody this character in every response. Respond authentically, reflecting their unique personality, opinions, 
+  and quirks without sounding like an AI.
 
   Instructions:
 
