@@ -59,6 +59,10 @@ export default function useBookDialog() {
 						description: "Too many requests, please try again later.",
 					});
 				}
+
+				toast.error("Uh oh", {
+					description: "Gemini is not happy >:( - please try again",
+				});
 			}
 		} finally {
 			setIsAnalyzing(false);

@@ -1,5 +1,5 @@
 import useFetchBook from "@/app/hooks/useFetchBook";
-import { BookIcon, Trash2 } from "lucide-react";
+import { BookOpen, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { TableRow, TableCell } from "../ui/table";
@@ -33,7 +33,7 @@ export default function BookListItem({ book, onDelete }: { book: Book; onDelete:
 					}}
 				>
 					{loadingBookContent ? <LoadingSpinner /> : <div className="hidden md:inline lg:inline">Open</div>}{" "}
-					<BookIcon />
+					<BookOpen />
 				</Button>
 				<Button variant="destructive" onClick={handleDelete(book.id)}>
 					<Trash2 />

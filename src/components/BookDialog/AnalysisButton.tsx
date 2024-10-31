@@ -81,7 +81,7 @@ const AnalysisButton = ({
 	}, [isAnalyzing, remainingMessages]);
 
 	return (
-		<div className="flex flex-row items-center justify-center pr-4 pt-4 text-left">
+		<div className="flex flex-row items-center justify-start pr-4 pt-4 text-left">
 			<Button
 				type="button"
 				disabled={isAnalyzing}
