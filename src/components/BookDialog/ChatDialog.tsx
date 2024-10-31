@@ -25,7 +25,7 @@ export default function ChatDialog({
 	} = useChatDialog(activeCharacter);
 
 	return (
-		<div className="p:2 sm:max-w-1/2 flex h-full w-full flex-col justify-start overflow-scroll sm:p-4 md:max-h-fit md:w-fit">
+		<div className="p:2 sm:max-w-1/2 flex h-full w-full flex-col justify-between overflow-auto sm:p-4 md:max-h-fit md:w-fit">
 			{/* Character Name and Header */}
 			<div className="flex justify-between border-b-2 border-gray-200 py-3 sm:items-center">
 				<div className="relative flex items-center space-x-4">
@@ -68,6 +68,17 @@ export default function ChatDialog({
 								)}
 							</div>
 						)),
+
+						...chatHistory.map((chatMessage, i) => (
+							<div key={i}>
+								{chatMessage.role === "model" ? (
+									<ModelMessage message={chatMessage.message} />
+								) : (
+									<UserMessage message={chatMessage.message} />
+								)}
+							</div>
+						)),
+
 						streamingResponse ? (
 							<div key={chatHistory.length}>
 								<ModelMessage message={currentResponse} />
@@ -81,7 +92,7 @@ export default function ChatDialog({
 			</div>
 
 			{/* Textbox and send button */}
-			<div className="mb-2 border-t-2 border-gray-200 px-4 pt-4 sm:mb-0">
+			<div className="mb-2 justify-self-end overflow-auto border-t-2 border-gray-200 px-4 pt-4 sm:mb-0">
 				<form
 					className="relative flex"
 					onSubmit={(e) => {
