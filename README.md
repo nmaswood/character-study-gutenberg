@@ -161,7 +161,7 @@ To run this project, you will need to add the following environment variables to
 
 ## Elaboration
 
-[Video of me explaining](https://linktodocumentation)
+[Video of me explaining](https://www.loom.com/share/f17752f27a274bf0bac65013b1cfa6a9?sid=02b79fc6-f934-4c41-baa2-0733130d7421)
 
 ## Installation and Running
 
