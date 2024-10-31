@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
@@ -41,21 +42,21 @@ export default function BookDialog() {
 	return (
 		<Dialog open={openedBook !== null} onOpenChange={onOpenChange}>
 			<DialogContent
-				className={`md:min-h-1/2 flex max-h-[750px] min-h-[700px] pr-12 transition-all duration-100 md:min-w-[800px] ${
+				className={`md:min-h-1/2 flex h-full max-h-[750px] min-h-[700px] pr-12 pt-10 transition-all duration-100 md:min-w-[800px] ${
 					isChatOpen ? "sm:max-w-[80vw]" : "sm:max-w-1/2"
 				}`}
 			>
 				{/* Left section - Book details */}
-				<div className={`flex-1 overflow-auto px-2 md:block ${isChatOpen ? "hidden md:block md:border-r" : ""}`}>
+				<div className={`flex-1 overflow-auto md:block md:px-2 ${isChatOpen ? "hidden md:block md:border-r" : ""}`}>
 					<DialogHeader>
 						<DialogTitle>
-							<div className="pb-5">
+							<div className="pb-5 pt-5">
 								<div className="inline text-xl font-bold">{openedBook.title + " "}</div>
 								<div className="text-lg font-light"> by {openedBook.authors}</div>
 							</div>
 						</DialogTitle>
 					</DialogHeader>
-
+					{!openedBook.isAnalyzed && <AnalysisButton isAnalyzing={isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />}
 					{/* Book Content */}
 					<div className="flex flex-col gap-8 pt-3 md:pt-8">
 						{/* Short Summary */}
@@ -79,7 +80,7 @@ export default function BookDialog() {
 
 					{/* If analyzed, show book summary and character list */}
 					<div className="divide-y-4 divide-double">
-						{openedBook.isAnalyzed ? (
+						{openedBook.isAnalyzed && (
 							<div className="flex flex-col gap-8 pt-8">
 								<div className="grid w-full grid-flow-row grid-cols-2 gap-3 md:grid-cols-3 md:gap-2">
 									{openedBook.characters?.map((character, i) => (
@@ -94,12 +95,15 @@ export default function BookDialog() {
 									))}
 								</div>
 							</div>
-						) : (
-							<AnalysisButton isAnalyzing={isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />
 						)}
 					</div>
 					<DialogDescription>{/* Additional content like the book's metadata or summary */}</DialogDescription>
 					<BookReader bookContent={openedBook.bookContent} />
+					<DialogClose asChild className="mt-5">
+						<Button type="button" variant="secondary">
+							Close Book
+						</Button>
+					</DialogClose>
 				</div>
 
 				{/* Right section - Chat panel, only visible when a character is selected */}
