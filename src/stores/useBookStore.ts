@@ -107,6 +107,7 @@ export const useBookStore = create<BookState & BookAction>()(
 
 					return {
 						...book,
+						bookContent,
 						isAnalyzed,
 					} as LoadedBook;
 				});
