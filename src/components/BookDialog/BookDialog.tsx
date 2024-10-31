@@ -5,38 +5,47 @@ import {
 	DialogClose,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { formatNumber } from "../../lib/utils";
+import { formatNumber, MAX_ALLOWED_TOKEN_COUNT, MAX_RECOMMENDED_TOKEN_COUNT } from "../../lib/utils";
 import useBookDialog from "@/app/hooks/useBookDialog";
 import BookReader from "../BookList/BookReader";
 import ChatDialog from "./ChatDialog";
 import { courier } from "../fonts";
-import { MessageCircleMore, MessageCirclePlus } from "lucide-react";
+import { MessageCircleMore, MessageCirclePlus, TriangleAlert } from "lucide-react";
 import { useChatStore } from "@/stores/useChatStore";
 import AnalysisButton from "./AnalysisButton";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 export default function BookDialog() {
 	const {
 		activeCharacter,
-		analyzeBook,
+
+		handleAnalyze,
 		handleChatOpen,
+		handleCloseAlert,
 		handleCloseChat,
 		isAnalyzing,
 		isChatOpen,
 		onOpenChange,
 		openedBook,
 		totalCount,
+		showAlert,
 	} = useBookDialog();
 
 	const { userChats } = useChatStore();
 
-	const handleAnalyze = async () => {
-		await analyzeBook(openedBook!);
-	};
-
+	console.log(showAlert);
 	if (!openedBook) return <></>;
 
 	return (
@@ -72,7 +81,23 @@ export default function BookDialog() {
 									className="relative flex flex-1 flex-col justify-center gap-1 px-6 py-4 text-left sm:px-8 sm:py-6"
 								>
 									<span className="text-xs font-semibold">{key}</span>
-									<span className="text-lg font-bold sm:text-3xl">{formatNumber(totalCount[i])}</span>
+									<span className="text-lg font-bold sm:text-3xl">
+										{formatNumber(totalCount[i])}
+										{!openedBook.isAnalyzed && key === "Token Count" && totalCount[i] > MAX_RECOMMENDED_TOKEN_COUNT && (
+											<div
+												className="inline"
+												title={
+													totalCount[i] > MAX_ALLOWED_TOKEN_COUNT
+														? `Gemini WILL FAIL to analyze the book due to the word count, please analyze a book less than 120k words`
+														: `Gemini MIGHT FAIL to analyze the book due to the token count, either try again or analyze a book less than 120k tokens`
+												}
+											>
+												<TriangleAlert
+													className={`inline pb-1 pl-1 ${totalCount[i] > MAX_ALLOWED_TOKEN_COUNT ? "text-red-600" : "text-yellow-400"} `}
+												/>
+											</div>
+										)}
+									</span>
 								</div>
 							))}
 						</div>
@@ -111,7 +136,20 @@ export default function BookDialog() {
 					<ChatDialog activeCharacter={activeCharacter} handleCloseChat={handleCloseChat} />
 				)}
 			</DialogContent>
-			<DialogFooter>{/* Footer if needed */}</DialogFooter>
+			<AlertDialog open={showAlert.show} onOpenChange={handleCloseAlert} defaultOpen={showAlert.show}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>High token count detected</AlertDialogTitle>
+						<AlertDialogDescription>{showAlert.content}</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>{showAlert.allow ? "Cancel" : "Ok"}</AlertDialogCancel>
+						{showAlert.allow && (
+							<AlertDialogAction onClick={async () => await handleAnalyze(true)}>Try anyway</AlertDialogAction>
+						)}
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</Dialog>
 	);
 }

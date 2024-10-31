@@ -7,6 +7,7 @@ import { encode } from "gpt-tokenizer";
 import { useMemo, useState } from "react";
 import { AnalyzeBookResponse } from "../api/model/book/analyze/route";
 import { toast } from "sonner";
+import { MAX_ALLOWED_TOKEN_COUNT, MAX_RECOMMENDED_TOKEN_COUNT } from "@/lib/utils";
 
 export type Character = {
 	id: number;
@@ -19,17 +20,11 @@ export default function useBookDialog() {
 	const [isAnalyzing, setIsAnalyzing] = useState(false);
 	const [isChatOpen, setIsChatOpen] = useState(false);
 	const [activeCharacter, setActiveCharacter] = useState<Character | null>(null);
-
-	const handleChatOpen = (character: Character) => {
-		setActiveCharacter(character);
-		setIsChatOpen(true);
-	};
-
-	const handleCloseChat = () => {
-		setIsChatOpen(false);
-		setActiveCharacter(null);
-	};
-
+	const [showAlert, setShowAlert] = useState({
+		show: false,
+		content: "",
+		allow: false,
+	});
 	const analyzeBook = async (book: LoadedBook) => {
 		setIsAnalyzing(true);
 
@@ -69,6 +64,58 @@ export default function useBookDialog() {
 		}
 	};
 
+	const handleAnalyze = async (bypass: boolean = false) => {
+		console.log("here");
+		if (bypass) {
+			setShowAlert({
+				show: false,
+				content: "",
+				allow: false,
+			});
+			await analyzeBook(openedBook!);
+
+			return;
+		}
+
+		if (totalCount[1] > MAX_ALLOWED_TOKEN_COUNT) {
+			setShowAlert({
+				show: true,
+				content: "Too many tokens, please try again with a smaller book.",
+				allow: false,
+			});
+			return;
+		}
+
+		if (totalCount[1] > MAX_RECOMMENDED_TOKEN_COUNT) {
+			setShowAlert({
+				show: true,
+				content: "The analysis might fail, if it does, please try again or try a smaller book.",
+				allow: true,
+			});
+			return;
+		}
+
+		await analyzeBook(openedBook!);
+	};
+
+	const handleCloseAlert = () => {
+		setShowAlert({
+			allow: false,
+			content: "",
+			show: false,
+		});
+	};
+
+	const handleChatOpen = (character: Character) => {
+		setActiveCharacter(character);
+		setIsChatOpen(true);
+	};
+
+	const handleCloseChat = () => {
+		setIsChatOpen(false);
+		setActiveCharacter(null);
+	};
+
 	const totalCount = useMemo(() => {
 		if (!openedBook) return [0, 0];
 		const bookContent = openedBook.bookContent;
@@ -87,13 +134,15 @@ export default function useBookDialog() {
 
 	return {
 		activeCharacter,
-		analyzeBook,
+		handleAnalyze,
 		handleChatOpen,
+		handleCloseAlert,
 		handleCloseChat,
 		isAnalyzing,
 		isChatOpen,
 		onOpenChange,
 		openedBook,
+		showAlert,
 		totalCount,
 	};
 }
