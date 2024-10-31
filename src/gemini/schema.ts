@@ -3,6 +3,17 @@ import { Schema, SchemaType } from "@google/generative-ai";
 export const BookAnalysisSchema: Schema = {
 	type: SchemaType.OBJECT,
 	properties: {
+		error: {
+			type: SchemaType.OBJECT,
+			properties: {
+				message: {
+					type: SchemaType.STRING,
+					description: "'NOT_FICTION' if the work is not fiction, otherwise a user facing clear error message",
+				},
+			},
+			description: "Error if any",
+			nullable: true,
+		},
 		characters: {
 			description: "List of characters, maximum 5",
 			type: SchemaType.ARRAY,
