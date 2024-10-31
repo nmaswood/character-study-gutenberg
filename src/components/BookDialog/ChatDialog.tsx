@@ -92,7 +92,7 @@ export default function ChatDialog({
 			</div>
 
 			{/* Textbox and send button */}
-			<div className="mb-2 justify-self-end overflow-auto border-t-2 border-gray-200 px-4 pb-10 pt-4 sm:mb-0">
+			<div className="mb-2 justify-self-end overflow-auto border-t-2 border-gray-200 px-4 pb-5 pt-4 sm:mb-0">
 				<form
 					className="relative flex"
 					onSubmit={(e) => {
