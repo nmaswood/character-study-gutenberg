@@ -86,7 +86,7 @@ const AnalysisButton = ({
 				type="button"
 				disabled={isAnalyzing}
 				onClick={handleAnalyze()}
-				className={`md:disable:flex-row align-self-center flex min-w-fit transition-all duration-300 disabled:min-w-fit disabled:max-w-[450px] disabled:items-center disabled:justify-start disabled:whitespace-normal disabled:bg-transparent disabled:py-4 disabled:text-left disabled:text-white disabled:opacity-100 disabled:shadow-none md:flex md:disabled:bg-[#8f8053]`}
+				className={`md:disable:flex-row align-self-center flex min-w-fit transition-all duration-300 disabled:min-w-fit disabled:max-w-[450px] disabled:items-center disabled:justify-start disabled:whitespace-normal disabled:bg-[#8f8053] disabled:bg-transparent disabled:py-4 disabled:text-left disabled:text-white disabled:opacity-100 disabled:shadow-none md:flex`}
 			>
 				{isAnalyzing ? (
 					<>
