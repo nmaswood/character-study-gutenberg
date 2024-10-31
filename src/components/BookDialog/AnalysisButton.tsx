@@ -50,10 +50,13 @@ const AnalysisButton = ({
 		return async (e: React.MouseEvent<HTMLElement>) => {
 			e.preventDefault();
 			await onAnalyzeButtonClick();
+			setRemainingMessages(messages);
+			setCount(0);
 		};
 	};
 
 	useEffect(() => {
+		if (!isAnalyzing) return;
 		if (remainingMessages.length === 0) return;
 
 		const updateMessage = () => {
@@ -75,7 +78,7 @@ const AnalysisButton = ({
 			clearInterval(updateMessageInterval);
 			clearInterval(updateCountInterval);
 		};
-	}, [remainingMessages]);
+	}, [isAnalyzing, remainingMessages]);
 
 	return (
 		<div className="flex flex-row items-center justify-center pr-4 pt-4 text-left">
