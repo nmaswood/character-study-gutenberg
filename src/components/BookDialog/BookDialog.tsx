@@ -51,12 +51,12 @@ export default function BookDialog() {
 	return (
 		<Dialog open={openedBook !== null} onOpenChange={onOpenChange}>
 			<DialogContent
-				className={`md:min-h-1/2 flex h-full max-h-[750px] min-h-[700px] pr-12 pt-10 transition-all duration-100 md:min-w-[800px] ${
+				className={`md:min-h-1/2 flex h-full max-h-[750px] min-h-[700px] pr-12 pt-10 transition-all duration-100 md:min-w-[800px] md:pr-8 ${
 					isChatOpen ? "sm:max-w-[80vw]" : "sm:max-w-1/2"
 				}`}
 			>
 				{/* Left section - Book details */}
-				<div className={`flex-1 overflow-auto md:block md:px-2 ${isChatOpen ? "hidden md:block md:border-r" : ""}`}>
+				<div className={`flex-1 overflow-auto md:block md:px-2 ${isChatOpen ? "hidden md:border-r lg:block" : ""}`}>
 					<DialogHeader>
 						<DialogTitle>
 							<div className="pb-5 pt-5">

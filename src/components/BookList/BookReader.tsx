@@ -22,8 +22,12 @@ export default function BookReader({ bookContent }: { bookContent: string }) {
 	return (
 		<div className="w-full">
 			<div className="flex w-full flex-col items-center justify-between gap-3 overflow-hidden pt-10 transition-all duration-300 md:items-start">
-				<div className="flex w-full flex-row items-center justify-center gap-3">
-					<Button type="button" className="hidden h-8 w-2 md:inline" onClick={prevPage}>
+				<div className="flex w-full flex-row items-center justify-center gap-1">
+					<Button
+						type="button"
+						className="hidden h-8 w-2 flex-row items-center justify-center lg:flex"
+						onClick={prevPage}
+					>
 						<ChevronLeft />
 					</Button>
 					<ScrollArea
@@ -33,12 +37,16 @@ export default function BookReader({ bookContent }: { bookContent: string }) {
 
 						{currentPage}
 					</ScrollArea>
-					<Button type="button" className="hidden h-8 w-2 md:inline" onClick={nextPage}>
+					<Button
+						type="button"
+						className="hidden h-8 w-2 flex-row items-center justify-center lg:flex"
+						onClick={nextPage}
+					>
 						<ChevronRight />
 					</Button>
 				</div>
-				<div className="flex w-full flex-row items-center justify-center gap-3 md:hidden">
-					<Button type="button" onClick={prevPage}>
+				<div className="flex w-full flex-row items-center justify-center gap-3 lg:hidden">
+					<Button type="button" className="" onClick={prevPage}>
 						<ChevronLeft />
 					</Button>
 					<div>Page {currentPageNumber + 1}</div>
