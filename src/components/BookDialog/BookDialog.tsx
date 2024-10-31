@@ -87,7 +87,7 @@ export default function BookDialog() {
 												) : (
 													<MessageCirclePlus />
 												)}
-												{character.characterName}
+												<div className="inline truncate">{character.characterName}</div>
 											</Button>
 										))}
 									</div>
