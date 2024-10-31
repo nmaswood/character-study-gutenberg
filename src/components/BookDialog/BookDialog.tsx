@@ -49,55 +49,56 @@ export default function BookDialog() {
 				<div className={`flex-1 overflow-auto px-2 md:block ${isChatOpen ? "hidden md:block md:border-r" : ""}`}>
 					<DialogHeader>
 						<DialogTitle>
-							<div>
-								<div className="inline text-xl">{openedBook.title + " "}</div>
-								<div className="inline text-lg"> by {openedBook.authors}</div>
+							<div className="pb-5">
+								<div className="inline text-xl font-bold">{openedBook.title + " "}</div>
+								<div className="text-lg font-light"> by {openedBook.authors}</div>
 							</div>
 						</DialogTitle>
-						{/* Book Content */}
-						<div className="flex flex-col gap-8 pt-3 md:pt-8">
-							{/* Short Summary */}
-							{openedBook.isAnalyzed && openedBook.shortSummary && (
-								<div className={`divide-y-2 text-sm opacity-95 md:text-base ${courier.className}`}>
-									{openedBook.shortSummary}
-								</div>
-							)}
-							<div className="flex flex-row divide-x-2 border-l sm:border-l sm:border-t-0">
-								{["Word Count", "Token Count"].map((key, i) => (
-									<div
-										key={i}
-										className="relative flex flex-1 flex-col justify-center gap-1 px-6 py-4 text-left sm:px-8 sm:py-6"
-									>
-										<span className="text-xs font-semibold">{key}</span>
-										<span className="text-lg font-bold sm:text-3xl">{formatNumber(totalCount[i])}</span>
-									</div>
-								))}
-							</div>
-						</div>
-
-						{/* If analyzed, show book summary */}
-						<div className="divide-y-4 divide-double">
-							{openedBook.isAnalyzed ? (
-								<div className="flex flex-col gap-8 pt-8">
-									<div className="grid w-full grid-flow-row grid-cols-2 gap-3 md:grid-cols-3 md:gap-2">
-										{openedBook.characters?.map((character, i) => (
-											<Button type="button" onClick={() => handleChatOpen(character)} key={i}>
-												{userChats.find((ch) => ch.characterId === character.id) ? (
-													<MessageCircleMore />
-												) : (
-													<MessageCirclePlus />
-												)}
-												<div className="inline truncate">{character.characterName}</div>
-											</Button>
-										))}
-									</div>
-								</div>
-							) : (
-								<AnalysisButton isAnalyzing={isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />
-							)}
-						</div>
-						<DialogDescription>{/* Additional content like the book's metadata or summary */}</DialogDescription>
 					</DialogHeader>
+
+					{/* Book Content */}
+					<div className="flex flex-col gap-8 pt-3 md:pt-8">
+						{/* Short Summary */}
+						{openedBook.isAnalyzed && openedBook.shortSummary && (
+							<div className={`divide-y-2 text-sm opacity-95 md:text-base ${courier.className}`}>
+								{openedBook.shortSummary}
+							</div>
+						)}
+						<div className="flex flex-row divide-x-2 border-l sm:border-l sm:border-t-0">
+							{["Word Count", "Token Count"].map((key, i) => (
+								<div
+									key={i}
+									className="relative flex flex-1 flex-col justify-center gap-1 px-6 py-4 text-left sm:px-8 sm:py-6"
+								>
+									<span className="text-xs font-semibold">{key}</span>
+									<span className="text-lg font-bold sm:text-3xl">{formatNumber(totalCount[i])}</span>
+								</div>
+							))}
+						</div>
+					</div>
+
+					{/* If analyzed, show book summary and character list */}
+					<div className="divide-y-4 divide-double">
+						{openedBook.isAnalyzed ? (
+							<div className="flex flex-col gap-8 pt-8">
+								<div className="grid w-full grid-flow-row grid-cols-2 gap-3 md:grid-cols-3 md:gap-2">
+									{openedBook.characters?.map((character, i) => (
+										<Button type="button" onClick={() => handleChatOpen(character)} key={i}>
+											{userChats.find((ch) => ch.characterId === character.id) ? (
+												<MessageCircleMore />
+											) : (
+												<MessageCirclePlus />
+											)}
+											<div className="inline truncate">{character.characterName}</div>
+										</Button>
+									))}
+								</div>
+							</div>
+						) : (
+							<AnalysisButton isAnalyzing={isAnalyzing} onAnalyzeButtonClick={handleAnalyze} />
+						)}
+					</div>
+					<DialogDescription>{/* Additional content like the book's metadata or summary */}</DialogDescription>
 					<BookReader bookContent={openedBook.bookContent} />
 				</div>
 
