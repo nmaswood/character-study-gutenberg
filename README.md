@@ -134,6 +134,15 @@ Model: Gemini 1.5 Flash
 - **Hosting on Vercel**
   - Hosted on a hobbyist Vercel account, meaning any analysis taking longer than 60 seconds will terminate. Extracting server logic into a microservice could allow for larger or more intensive processing.
 
+### Next Steps
+
+- Search for books
+
+- Pretty banner
+
+- Alert on clearing chat
+
+
 ## Demo
 
 https://character-study-gutenberg.vercel.app/
