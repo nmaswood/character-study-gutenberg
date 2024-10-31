@@ -14,7 +14,7 @@ const messages = [
 	"Attempting to read while upside down",
 	"Removing any and all plot spoilers",
 	"Translating text to ancient runes (and back)",
-	"Reimagining story as a musical",
+	"Re-imagining story as a musical",
 	"Replacing verbs with emojis 🕵️‍♂️",
 	"Checking if protagonists like pineapple on pizza",
 	"Skipping the boring parts (don’t tell!)",
