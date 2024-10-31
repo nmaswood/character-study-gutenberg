@@ -9,7 +9,7 @@ export default function BookList() {
 	const { localBooks, removeBook, _hasHydrated } = useBookStore();
 
 	return (
-		<div className="z-10 max-h-svh min-h-[300px] divide-y divide-solid overflow-auto rounded-t-lg md:px-10 md:py-8">
+		<div className="z-10 divide-y divide-solid overflow-auto rounded-t-lg pb-10 md:max-h-svh md:px-10 md:py-8 md:pb-20">
 			<div className="flex flex-row items-center justify-between pb-2">
 				<div className="text-xl font-bold">Local Library</div>
 				<div>{localBooks.length} book(s) found</div>
