@@ -43,3 +43,6 @@ export const formatNumber = (num: number): string => {
 	}
 	return num.toString();
 };
+
+export const MAX_RECOMMENDED_TOKEN_COUNT = 20_000;
+export const MAX_ALLOWED_TOKEN_COUNT = 400_000;
